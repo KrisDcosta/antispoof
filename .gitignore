@@ -1,0 +1,37 @@
+data/
+*.zip
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.ipynb_checkpoints/
+
+# Large or reproducible experiment artifacts
+results/feature_cache*/
+results/smoke*/
+results/preliminary/
+results/*.log
+results/*.txt
+results/*.png
+archive/**/results/*.log
+archive/**/results/*.txt
+results/**/models/
+results/**/scores/
+results/**/*.joblib
+results/**/*.npy
+results/**/*.tmp.npy
+
+# Keep lightweight reports and plots reviewable.
+!results/**/summary/
+!results/**/summary/**
+!results/**/plots/
+!results/**/plots/**
+!results/**/metrics/
+!results/**/metrics/**
+
+*.pkl
+*.pth
+*.onnx
+*.egg-info/
+.env

@@ -1,0 +1,15 @@
+{
+  "data": "data/LA",
+  "output": "results/baseline",
+  "cache_dir": "results/feature_cache",
+  "features": ["lfcc", "mfcc", "cqcc"],
+  "splits": ["dev", "eval"],
+  "gmm_components": 64,
+  "covariance_type": "diag",
+  "max_iter": 100,
+  "reg_covar": 1e-6,
+  "max_frames_per_class": 300000,
+  "standardize": true,
+  "seed": 42,
+  "summary_output": "results/baseline/summary"
+}

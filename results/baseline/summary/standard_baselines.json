@@ -1,0 +1,22 @@
+{
+  "baselines": [
+    {
+      "classifier": "GMM",
+      "dev_eer_percent": 2.71,
+      "eval_eer_percent": 8.09,
+      "feature": "LFCC",
+      "name": "Official LFCC-GMM",
+      "source": "ASVspoof 2019 evaluation plan and challenge paper",
+      "source_url": "https://arxiv.org/abs/1904.05441"
+    },
+    {
+      "classifier": "GMM",
+      "dev_eer_percent": 0.43,
+      "eval_eer_percent": 9.57,
+      "feature": "CQCC",
+      "name": "Official CQCC-GMM",
+      "source": "ASVspoof 2019 evaluation plan and challenge paper",
+      "source_url": "https://arxiv.org/abs/1904.05441"
+    }
+  ]
+}

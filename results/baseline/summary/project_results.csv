@@ -1,0 +1,7 @@
+method,feature,classifier,split,eer_percent,threshold,accuracy_percent,metrics_path,run_id
+CQCC GMM-LLR,cqcc,gmm-llr,dev,11.14998205951281,0.3934173583992996,88.85042666237321,results/baseline/metrics/gmm_cqcc_64c_diag_std_300000frames_seed42_dev_metrics.json,gmm_cqcc_64c_diag_std_300000frames_seed42
+CQCC GMM-LLR,cqcc,gmm-llr,eval,11.591684668560065,0.393659591675701,88.40911324171428,results/baseline/metrics/gmm_cqcc_64c_diag_std_300000frames_seed42_eval_metrics.json,gmm_cqcc_64c_diag_std_300000frames_seed42
+LFCC GMM-LLR,lfcc,gmm-llr,dev,0.05830642270265483,0.7321510314702896,99.9436483658026,results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_dev_metrics.json,gmm_lfcc_64c_diag_std_300000frames_seed42
+LFCC GMM-LLR,lfcc,gmm-llr,eval,10.245452553163533,1.949676513671212,89.7553237783736,results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_eval_metrics.json,gmm_lfcc_64c_diag_std_300000frames_seed42
+MFCC GMM-LLR,mfcc,gmm-llr,dev,9.772370486617731,0.360369453252172,90.2310417002093,results/baseline/metrics/gmm_mfcc_64c_diag_std_300000frames_seed42_dev_metrics.json,gmm_mfcc_64c_diag_std_300000frames_seed42
+MFCC GMM-LLR,mfcc,gmm-llr,eval,16.410605030591412,0.8561281213300077,83.5885845838539,results/baseline/metrics/gmm_mfcc_64c_diag_std_300000frames_seed42_eval_metrics.json,gmm_mfcc_64c_diag_std_300000frames_seed42

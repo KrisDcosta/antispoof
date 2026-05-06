@@ -1,0 +1,44 @@
+{
+  "cqcc": {
+    "dev": {
+      "accuracy_at_eer_threshold": 0.888504266623732,
+      "eer": 0.1114998205951281,
+      "metrics_path": "results/baseline/metrics/gmm_cqcc_64c_diag_std_300000frames_seed42_dev_metrics.json",
+      "threshold": 0.3934173583992996
+    },
+    "eval": {
+      "accuracy_at_eer_threshold": 0.8840911324171428,
+      "eer": 0.11591684668560065,
+      "metrics_path": "results/baseline/metrics/gmm_cqcc_64c_diag_std_300000frames_seed42_eval_metrics.json",
+      "threshold": 0.393659591675701
+    }
+  },
+  "lfcc": {
+    "dev": {
+      "accuracy_at_eer_threshold": 0.9994364836580261,
+      "eer": 0.0005830642270265483,
+      "metrics_path": "results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_dev_metrics.json",
+      "threshold": 0.7321510314702896
+    },
+    "eval": {
+      "accuracy_at_eer_threshold": 0.897553237783736,
+      "eer": 0.10245452553163532,
+      "metrics_path": "results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_eval_metrics.json",
+      "threshold": 1.949676513671212
+    }
+  },
+  "mfcc": {
+    "dev": {
+      "accuracy_at_eer_threshold": 0.902310417002093,
+      "eer": 0.09772370486617732,
+      "metrics_path": "results/baseline/metrics/gmm_mfcc_64c_diag_std_300000frames_seed42_dev_metrics.json",
+      "threshold": 0.360369453252172
+    },
+    "eval": {
+      "accuracy_at_eer_threshold": 0.835885845838539,
+      "eer": 0.16410605030591413,
+      "metrics_path": "results/baseline/metrics/gmm_mfcc_64c_diag_std_300000frames_seed42_eval_metrics.json",
+      "threshold": 0.8561281213300077
+    }
+  }
+}
