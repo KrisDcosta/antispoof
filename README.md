@@ -111,6 +111,12 @@ Run tests:
 make test
 ```
 
+Install neural-model dependencies:
+
+```bash
+pip install -r requirements-neural.txt
+```
+
 ## Reproduce The Project
 
 The experiment settings are stored in:
@@ -142,6 +148,15 @@ Equivalent direct command:
 ```bash
 python scripts/run_project.py --config configs/asvspoof2019_gmm.json
 ```
+
+Run the Phase 1 neural smoke test:
+
+```bash
+make neural-smoke
+```
+
+The neural smoke test validates the PyTorch log-mel LCNN pipeline locally. Its
+EER is not a benchmark because it uses a tiny capped sample and one epoch.
 
 ## Common Commands
 

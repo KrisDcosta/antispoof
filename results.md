@@ -94,7 +94,15 @@ The following sections should be filled as phases complete.
 
 ### Phase 1: PyTorch Spectrogram Countermeasures
 
-Pending.
+Implementation in progress. The local smoke run has passed; full dev/eval
+training is pending Colab/GPU execution.
+
+Search decision:
+
+- No broad grid search before the first valid neural baseline.
+- First run uses the checked-in LCNN/log-mel config.
+- Any later sweep must be targeted, dev-only, documented, and added to this
+  ledger if used in project claims.
 
 Expected entries:
 
@@ -105,6 +113,25 @@ Expected entries:
 - parameter count
 - training command
 - run artifact path
+
+Smoke validation:
+
+| Run ID | Track | Feature / Model | Dev EER | Status | Evidence |
+|---|---|---|---:|---|---|
+| `lcnn_logmel_smoke_seed42_1ep` | Protocol-comparable | log-mel LCNN smoke | 53.12% | Pipeline validation only; not a meaningful model result | `results/neural/lcnn_logmel_smoke_seed42_1ep/metrics.json` |
+
+Smoke command:
+
+```bash
+make neural-smoke
+```
+
+Smoke interpretation:
+
+- The run used 64 training utterances, 64 dev utterances, and 1 epoch.
+- The result is not reported as a model benchmark.
+- The run validates dataloading, log-mel extraction, training, scoring,
+  metrics, plots, checkpointing, and model-card generation.
 
 ### Phase 2: Waveform and Graph-Attention Countermeasures
 

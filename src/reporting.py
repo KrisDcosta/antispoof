@@ -97,7 +97,7 @@ def save_score_distribution(path: str | os.PathLike, rows: list[dict[str, object
     fig, ax = plt.subplots(figsize=(7, 4.5))
     ax.hist(spoof, bins=80, alpha=0.65, label="spoof", density=True)
     ax.hist(bonafide, bins=80, alpha=0.65, label="bonafide", density=True)
-    ax.set_xlabel("GMM log-likelihood ratio score")
+    ax.set_xlabel("Bonafide score")
     ax.set_ylabel("Density")
     ax.set_title(title)
     ax.legend()

@@ -36,6 +36,7 @@ leaderboard chase.
 | LLM approach | Use deterministic local retrieval first; optionally use OpenAI/Grok only to summarize retrieved evidence. |
 | Cloud | Not required. Local app plus reproducible scripts are higher priority. |
 | App scope | Local analyst/workbench demo, not production cloud deployment. |
+| Hyperparameter search | Do not run a broad grid search before a valid neural baseline exists. Use one controlled LCNN config first, then run targeted sweeps only after smoke/full training artifacts are valid. |
 | Security posture | No dataset, keys, checkpoints, model weights, caches, or score files committed unless intentionally lightweight and anonymized. |
 
 ## Evaluation Tracks
@@ -214,6 +215,16 @@ Exit criteria:
 - Results added to `results.md`.
 - Plots generated.
 - README updated with neural comparison.
+
+Search strategy:
+
+- Start with the checked-in LCNN/log-mel config.
+- Do not tune against eval during development.
+- After the first full dev/eval run, allow a small targeted dev-only sweep over
+  learning rate, dropout, clip length, and model width if the baseline is
+  clearly undertrained or unstable.
+- Report all accepted runs in `results.md`; do not cherry-pick undocumented
+  trials.
 
 ### Phase 2: Waveform and Graph-Attention Countermeasure
 
@@ -442,10 +453,10 @@ Parallel agents should:
 - [x] Run registry scaffold
 - [x] Model-card template
 - [x] Colab handoff script/instructions
-- [ ] PyTorch ASVspoof dataset module
-- [ ] Log-mel feature transform
-- [ ] CNN/LCNN model
-- [ ] Neural training script
-- [ ] Neural evaluation script
-- [ ] Phase 1 smoke run
+- [x] PyTorch ASVspoof dataset module
+- [x] Log-mel feature transform
+- [x] CNN/LCNN model
+- [x] Neural training script
+- [x] Neural evaluation script
+- [x] Phase 1 smoke run
 - [ ] Phase 1 full dev/eval run
