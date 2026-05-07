@@ -1,6 +1,7 @@
 data/
 *.zip
 venv/
+tmp/
 __pycache__/
 *.pyc
 *.pyo

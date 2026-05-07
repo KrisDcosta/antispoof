@@ -10,6 +10,11 @@ The result is an end-to-end audio ML workflow with dataset validation, EDA,
 feature extraction, model training, scoring, EER evaluation, per-attack
 diagnostics, and comparison against published ASVspoof reference systems.
 
+Project control documents:
+
+- `plan.md`: roadmap, architecture, phase gates, and implementation rules
+- `results.md`: authoritative results ledger for reported numbers
+
 ## Method
 
 The classifier is a dual-GMM log-likelihood-ratio system:
@@ -59,6 +64,7 @@ feature recipes and unseen-attack evaluation.
 
 Generated reports:
 
+- `results.md`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
@@ -232,6 +238,8 @@ SAP/
 ├── configs/
 │   ├── asvspoof2019_gmm.json
 │   └── asvspoof2019_smoke.json
+├── plan.md
+├── results.md
 ├── src/
 │   ├── dataset.py        # official ASVspoof protocol loader
 │   ├── evaluate.py       # EER, ROC, confusion matrix utilities
