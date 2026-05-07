@@ -1,0 +1,32 @@
+{
+  "run_name": "lcnn_logmel_smoke",
+  "track": "protocol_comparable",
+  "model": {
+    "type": "lcnn",
+    "input": "logmel",
+    "n_mels": 64,
+    "dropout": 0.3
+  },
+  "data": {
+    "root": "data/LA",
+    "sample_rate": 16000,
+    "clip_seconds": 4.0,
+    "train_limit": 64,
+    "eval_limit": 64,
+    "splits": ["dev"]
+  },
+  "training": {
+    "epochs": 1,
+    "batch_size": 8,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.000001,
+    "num_workers": 0,
+    "seed": 42,
+    "device": "auto"
+  },
+  "output": {
+    "root": "results/neural",
+    "save_scores": true,
+    "save_checkpoint": true
+  }
+}

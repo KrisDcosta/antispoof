@@ -12,6 +12,10 @@ __pycache__/
 results/feature_cache*/
 results/smoke*/
 results/preliminary/
+results/neural/*/
+results/runs/*/
+!results/neural/.gitkeep
+!results/runs/.gitkeep
 results/*.log
 results/*.txt
 results/*.png

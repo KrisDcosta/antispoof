@@ -1,0 +1,32 @@
+{
+  "run_name": "lcnn_logmel_full",
+  "track": "protocol_comparable",
+  "model": {
+    "type": "lcnn",
+    "input": "logmel",
+    "n_mels": 64,
+    "dropout": 0.3
+  },
+  "data": {
+    "root": "data/LA",
+    "sample_rate": 16000,
+    "clip_seconds": 4.0,
+    "train_limit": null,
+    "eval_limit": null,
+    "splits": ["dev", "eval"]
+  },
+  "training": {
+    "epochs": 30,
+    "batch_size": 32,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.000001,
+    "num_workers": 4,
+    "seed": 42,
+    "device": "auto"
+  },
+  "output": {
+    "root": "results/neural",
+    "save_scores": true,
+    "save_checkpoint": true
+  }
+}

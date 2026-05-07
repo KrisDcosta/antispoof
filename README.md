@@ -14,6 +14,8 @@ Project control documents:
 
 - `plan.md`: roadmap, architecture, phase gates, and implementation rules
 - `results.md`: authoritative results ledger for reported numbers
+- `docs/run_artifact_contract.md`: expected structure for future experiment outputs
+- `docs/colab_handoff.md`: Colab/VSCode GPU run instructions
 
 ## Method
 
@@ -237,7 +239,13 @@ git because they are large and reproducible.
 SAP/
 ├── configs/
 │   ├── asvspoof2019_gmm.json
-│   └── asvspoof2019_smoke.json
+│   ├── asvspoof2019_smoke.json
+│   ├── neural_lcnn.json
+│   └── neural_lcnn_smoke.json
+├── docs/
+│   ├── colab_handoff.md
+│   ├── model_card_template.md
+│   └── run_artifact_contract.md
 ├── plan.md
 ├── results.md
 ├── src/

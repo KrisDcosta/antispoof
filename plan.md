@@ -172,11 +172,11 @@ Tasks:
 
 - Add `plan.md` and root `results.md`.
 - Define architecture and interdependencies with Mermaid diagrams.
-- Add neural requirements file.
-- Add config convention for neural runs.
-- Add run registry structure.
-- Add model-card template.
-- Add Colab handoff instructions.
+- Add neural requirements file. Done: `requirements-neural.txt`.
+- Add config convention for neural runs. Done: `configs/neural_lcnn*.json`.
+- Add run registry structure. Done: `results/neural/.gitkeep` and `results/runs/.gitkeep`.
+- Add model-card template. Done: `docs/model_card_template.md`.
+- Add Colab handoff instructions. Done: `docs/colab_handoff.md`.
 - Add tests for neural dataset shapes once implemented.
 - Keep result outputs standardized and graphable.
 
@@ -436,13 +436,16 @@ Parallel agents should:
 - [x] EDA and baseline plots
 - [x] Root project plan
 - [x] Root results ledger
-- [ ] Neural requirements file
-- [ ] Neural config template
+- [x] Neural requirements file
+- [x] Neural config template
+- [x] Run artifact contract
+- [x] Run registry scaffold
+- [x] Model-card template
+- [x] Colab handoff script/instructions
 - [ ] PyTorch ASVspoof dataset module
 - [ ] Log-mel feature transform
 - [ ] CNN/LCNN model
 - [ ] Neural training script
 - [ ] Neural evaluation script
-- [ ] Colab training notebook or handoff script
 - [ ] Phase 1 smoke run
 - [ ] Phase 1 full dev/eval run
