@@ -18,7 +18,7 @@ from tqdm import tqdm
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from src.dataset import split_summary
-from src.neural.dataset import ASVspoofSpectrogramDataset, load_limited_split
+from src.neural.dataset import ASVspoofSpectrogramDataset, ASVspoofWaveformDataset, load_limited_split
 from src.neural.evaluation import metrics_from_score_rows, score_loader
 from src.neural.models import build_model
 from src.neural.train_utils import (
@@ -49,12 +49,22 @@ def parse_args() -> argparse.Namespace:
 
 
 def make_loader(samples, config: dict, transform, *, shuffle: bool) -> DataLoader:
-    dataset = ASVspoofSpectrogramDataset(
-        samples=samples,
-        transform=transform,
-        sample_rate=int(config["data"]["sample_rate"]),
-        clip_seconds=float(config["data"]["clip_seconds"]),
-    )
+    model_input = config["model"]["input"]
+    if model_input == "logmel":
+        dataset = ASVspoofSpectrogramDataset(
+            samples=samples,
+            transform=transform,
+            sample_rate=int(config["data"]["sample_rate"]),
+            clip_seconds=float(config["data"]["clip_seconds"]),
+        )
+    elif model_input == "waveform":
+        dataset = ASVspoofWaveformDataset(
+            samples=samples,
+            sample_rate=int(config["data"]["sample_rate"]),
+            num_samples=int(config["data"]["num_samples"]),
+        )
+    else:
+        raise ValueError(f"unsupported neural input type: {model_input}")
     return DataLoader(
         dataset,
         batch_size=int(config["training"]["batch_size"]),
@@ -73,12 +83,86 @@ def train_one_epoch(model, loader, optimizer, criterion, device) -> float:
         y = batch["label"].to(device)
         optimizer.zero_grad(set_to_none=True)
         logits = model(x)
-        loss = criterion(logits, y)
+        if logits.ndim == 2 and logits.shape[1] == 2:
+            loss = criterion(logits, y.long())
+        else:
+            loss = criterion(logits, y)
         loss.backward()
         optimizer.step()
         total_loss += float(loss.detach().cpu()) * len(y)
         total_items += len(y)
     return total_loss / max(total_items, 1)
+
+
+def build_transform(config: dict):
+    if config["model"]["input"] == "waveform":
+        return None
+    if config["model"]["input"] == "logmel":
+        return LogMelTransform(
+            sample_rate=int(config["data"]["sample_rate"]),
+            n_mels=int(config["model"]["n_mels"]),
+        )
+    raise ValueError(f"unsupported neural input type: {config['model']['input']}")
+
+
+def build_configured_model(config: dict) -> torch.nn.Module:
+    model_config = dict(config["model"])
+    model_type = str(model_config.pop("type"))
+    model_config.pop("input", None)
+    dropout = float(model_config.pop("dropout", 0.3))
+    if model_type == "lcnn":
+        model_config.pop("n_mels", None)
+    return build_model(model_type, dropout=dropout, **model_config)
+
+
+def build_criterion(config: dict) -> torch.nn.Module:
+    loss_name = str(config["training"].get("loss", "bce")).lower()
+    if loss_name == "cross_entropy":
+        class_weights = config["training"].get("class_weights")
+        weight = torch.tensor(class_weights, dtype=torch.float32) if class_weights else None
+        return torch.nn.CrossEntropyLoss(weight=weight)
+    if loss_name == "bce":
+        return torch.nn.BCEWithLogitsLoss()
+    raise ValueError(f"unsupported loss type: {loss_name}")
+
+
+def move_criterion_to_device(criterion: torch.nn.Module, device: torch.device) -> torch.nn.Module:
+    return criterion.to(device)
+
+
+def build_optimizer(config: dict, model: torch.nn.Module) -> torch.optim.Optimizer:
+    training = config["training"]
+    optimizer_name = str(training.get("optimizer", "adamw")).lower()
+    lr = float(training["learning_rate"])
+    weight_decay = float(training["weight_decay"])
+    if optimizer_name == "adam":
+        return torch.optim.Adam(
+            model.parameters(),
+            lr=lr,
+            weight_decay=weight_decay,
+            betas=tuple(training.get("betas", [0.9, 0.999])),
+        )
+    if optimizer_name == "adamw":
+        return torch.optim.AdamW(
+            model.parameters(),
+            lr=lr,
+            weight_decay=weight_decay,
+            betas=tuple(training.get("betas", [0.9, 0.999])),
+        )
+    raise ValueError(f"unsupported optimizer type: {optimizer_name}")
+
+
+def build_scheduler(config: dict, optimizer: torch.optim.Optimizer):
+    scheduler_name = str(config["training"].get("scheduler", "none")).lower()
+    if scheduler_name == "none":
+        return None
+    if scheduler_name == "cosine":
+        return torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer,
+            T_max=int(config["training"]["epochs"]),
+            eta_min=float(config["training"].get("min_learning_rate", 0.0)),
+        )
+    raise ValueError(f"unsupported scheduler type: {scheduler_name}")
 
 
 def evaluate_split(
@@ -134,14 +218,8 @@ def main() -> None:
     shutil.copy2(args.config, dirs["run"] / "config.json")
 
     device = select_device(config["training"]["device"])
-    transform = LogMelTransform(
-        sample_rate=int(config["data"]["sample_rate"]),
-        n_mels=int(config["model"]["n_mels"]),
-    )
-    model = build_model(
-        config["model"]["type"],
-        dropout=float(config["model"].get("dropout", 0.3)),
-    ).to(device)
+    transform = build_transform(config)
+    model = build_configured_model(config).to(device)
     params = count_parameters(model)
     write_json(dirs["run"] / "environment.json", environment_payload(args.config, device, params))
 
@@ -157,12 +235,9 @@ def main() -> None:
     print(f"Train: {split_summary(train_samples)}")
 
     train_loader = make_loader(train_samples, config, transform, shuffle=True)
-    criterion = torch.nn.BCEWithLogitsLoss()
-    optimizer = torch.optim.AdamW(
-        model.parameters(),
-        lr=float(config["training"]["learning_rate"]),
-        weight_decay=float(config["training"]["weight_decay"]),
-    )
+    criterion = move_criterion_to_device(build_criterion(config), device)
+    optimizer = build_optimizer(config, model)
+    scheduler = build_scheduler(config, optimizer)
 
     start = time.time()
     history = []
@@ -182,6 +257,8 @@ def main() -> None:
     final_results = {}
     for epoch in range(1, int(config["training"]["epochs"]) + 1):
         loss = train_one_epoch(model, train_loader, optimizer, criterion, device)
+        if scheduler is not None:
+            scheduler.step()
         epoch_result = {"epoch": epoch, "train_loss": loss}
         if "dev" in eval_loaders:
             dev_rows = score_loader(model, eval_loaders["dev"], device)

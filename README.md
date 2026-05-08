@@ -171,6 +171,18 @@ python scripts/train_neural.py --config configs/neural_lcnn.json
 The recorded full run used a Colab A100 and produced
 `lcnn_logmel_full_seed42_30ep`.
 
+Run the Phase 2 AASIST-lite waveform smoke test:
+
+```bash
+make aasist-smoke
+```
+
+Run the full Phase 2 AASIST-lite waveform baseline on GPU:
+
+```bash
+python scripts/train_neural.py --config configs/neural_aasist_lite.json
+```
+
 ## Common Commands
 
 Run EDA only:
@@ -268,6 +280,8 @@ SAP/
 ├── configs/
 │   ├── asvspoof2019_gmm.json
 │   ├── asvspoof2019_smoke.json
+│   ├── neural_aasist_lite.json
+│   ├── neural_aasist_lite_smoke.json
 │   ├── neural_lcnn.json
 │   └── neural_lcnn_smoke.json
 ├── docs/

@@ -1,0 +1,44 @@
+{
+  "run_name": "aasist_lite_waveform",
+  "track": "protocol_comparable",
+  "model": {
+    "type": "aasist_lite",
+    "input": "waveform",
+    "num_samples": 64600,
+    "first_conv": 64,
+    "encoder_channels": [16, 32, 64],
+    "graph_dim": 64,
+    "graph_hidden": 32,
+    "spectral_nodes": 16,
+    "temporal_nodes": 16,
+    "dropout": 0.3
+  },
+  "data": {
+    "root": "data/LA",
+    "sample_rate": 16000,
+    "num_samples": 64600,
+    "train_limit": null,
+    "eval_limit": null,
+    "splits": ["dev", "eval"]
+  },
+  "training": {
+    "epochs": 100,
+    "batch_size": 24,
+    "learning_rate": 0.0001,
+    "min_learning_rate": 0.000005,
+    "weight_decay": 0.0001,
+    "optimizer": "adam",
+    "scheduler": "cosine",
+    "loss": "cross_entropy",
+    "class_weights": [0.1, 0.9],
+    "betas": [0.9, 0.999],
+    "num_workers": 4,
+    "seed": 42,
+    "device": "auto"
+  },
+  "output": {
+    "root": "results/neural",
+    "save_scores": true,
+    "save_checkpoint": true
+  }
+}

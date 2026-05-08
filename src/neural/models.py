@@ -5,6 +5,8 @@ from __future__ import annotations
 import torch
 from torch import nn
 
+from src.neural.aasist import AASISTLite
+
 
 class MaxFeatureMap2d(nn.Module):
     """Max-Feature-Map activation used by LCNN-style models."""
@@ -57,8 +59,9 @@ class LogMelLCNN(nn.Module):
         return self.classifier(x).squeeze(1)
 
 
-def build_model(model_type: str, dropout: float = 0.3) -> nn.Module:
-    if model_type != "lcnn":
-        raise ValueError(f"unsupported neural model type: {model_type}")
-    return LogMelLCNN(dropout=dropout)
-
+def build_model(model_type: str, dropout: float = 0.3, **kwargs) -> nn.Module:
+    if model_type == "lcnn":
+        return LogMelLCNN(dropout=dropout)
+    if model_type == "aasist_lite":
+        return AASISTLite(dropout=dropout, **kwargs)
+    raise ValueError(f"unsupported neural model type: {model_type}")

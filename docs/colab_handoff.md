@@ -38,12 +38,79 @@ data/LA/
 └── ASVspoof2019_LA_cm_protocols/
 ```
 
-If using Google Drive, symlink the dataset into the repo:
+### Option A: Restore Dataset From Google Drive
+
+If the dataset archive is already in Google Drive, mount Drive and extract it
+into Colab local disk:
+
+```python
+from google.colab import drive
+drive.mount("/content/drive")
+```
+
+```bash
+mkdir -p /content/asvspoof_data /content/antispoof/data
+cp "/content/drive/MyDrive/asvspoof/LA_clean.tar.zst" /content/asvspoof_data/
+zstd -t /content/asvspoof_data/LA_clean.tar.zst
+tar --use-compress-program=unzstd -xf /content/asvspoof_data/LA_clean.tar.zst \
+  -C /content/antispoof/data
+```
+
+If using an already extracted Google Drive dataset instead, symlink it into the
+repo:
 
 ```bash
 mkdir -p data
 ln -s /content/drive/MyDrive/<path-to-ASVspoof>/LA data/LA
 ```
+
+### Option B: Recreate And Transfer The Clean Local Archive
+
+Use this when Drive does not have enough space for the full dataset. From the
+local repo on the Mac, create and verify a clean archive from the already
+extracted dataset:
+
+```bash
+cd /Users/krisdcosta/UCSD/Projects/SAP
+mkdir -p tmp
+tar -cf - -C data LA | zstd -T0 -19 -o tmp/LA_clean.tar.zst
+zstd -t tmp/LA_clean.tar.zst
+```
+
+Serve the archive from the Mac. A range-capable server is preferred for large
+downloads:
+
+```bash
+python -m pip install RangeHTTPServer
+cd /Users/krisdcosta/UCSD/Projects/SAP/tmp
+python -m RangeHTTPServer 8000
+```
+
+In another local terminal, expose the server:
+
+```bash
+cloudflared tunnel --url http://localhost:8000
+```
+
+In Colab, download from the printed Cloudflare URL, verify, and extract:
+
+```bash
+mkdir -p /content/asvspoof_data /content/antispoof/data
+wget -O /content/asvspoof_data/LA_clean.tar.zst \
+  "https://<cloudflare-url>/LA_clean.tar.zst"
+zstd -t /content/asvspoof_data/LA_clean.tar.zst
+tar --use-compress-program=unzstd -xf /content/asvspoof_data/LA_clean.tar.zst \
+  -C /content/antispoof/data
+```
+
+After extraction, the expected path is:
+
+```text
+/content/antispoof/data/LA/
+```
+
+If the repo clone is elsewhere, copy or symlink that folder to the clone's
+`data/LA` path before running training.
 
 ## Smoke Run
 
@@ -51,6 +118,12 @@ Run this before any full training:
 
 ```bash
 python scripts/train_neural.py --config configs/neural_lcnn_smoke.json
+```
+
+For the Phase 2 AASIST-lite waveform path:
+
+```bash
+python scripts/train_neural.py --config configs/neural_aasist_lite_smoke.json
 ```
 
 Expected output root:
@@ -63,6 +136,51 @@ results/neural/<run_id>/
 
 ```bash
 python scripts/train_neural.py --config configs/neural_lcnn.json
+```
+
+For the Phase 2 AASIST-lite waveform run:
+
+```bash
+python scripts/train_neural.py --config configs/neural_aasist_lite.json
+```
+
+## Archiving Full Run Artifacts
+
+Do not commit checkpoints or raw score files. Archive them before disconnecting
+Colab:
+
+```bash
+tar -czf /content/<run_id>_artifacts.tar.gz \
+  -C /content/antispoof/results/neural \
+  <run_id>
+```
+
+Download directly:
+
+```python
+from google.colab import files
+files.download("/content/<run_id>_artifacts.tar.gz")
+```
+
+If direct browser download fails, copy the small artifact archive to Drive:
+
+```python
+from google.colab import drive
+drive.mount("/content/drive", force_remount=True)
+```
+
+```bash
+mkdir -p "/content/drive/MyDrive/asvspoof_artifacts"
+cp -v /content/<run_id>_artifacts.tar.gz \
+  "/content/drive/MyDrive/asvspoof_artifacts/"
+ls -lh "/content/drive/MyDrive/asvspoof_artifacts/"
+```
+
+Flush before disconnecting if the Drive web UI lags:
+
+```python
+from google.colab import drive
+drive.flush_and_unmount()
 ```
 
 ## Returning Results To Repo

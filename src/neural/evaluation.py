@@ -18,7 +18,7 @@ def score_loader(model: torch.nn.Module, loader: DataLoader, device: torch.devic
     for batch in tqdm(loader, desc="score neural"):
         x = batch["x"].to(device)
         logits = model(x)
-        scores = torch.sigmoid(logits).detach().cpu().numpy()
+        scores = bonafide_scores_from_logits(logits).detach().cpu().numpy()
         labels = batch["label"].detach().cpu().numpy()
         for idx, score in enumerate(scores):
             label = int(labels[idx])
@@ -31,6 +31,17 @@ def score_loader(model: torch.nn.Module, loader: DataLoader, device: torch.devic
                 "score": float(score),
             })
     return rows
+
+
+def bonafide_scores_from_logits(logits: torch.Tensor) -> torch.Tensor:
+    """Return a bonafide probability where larger scores mean more bonafide."""
+    if logits.ndim == 1:
+        return torch.sigmoid(logits)
+    if logits.ndim == 2 and logits.shape[1] == 1:
+        return torch.sigmoid(logits.squeeze(1))
+    if logits.ndim == 2 and logits.shape[1] == 2:
+        return torch.softmax(logits, dim=1)[:, 1]
+    raise ValueError(f"unsupported model output shape for scoring: {tuple(logits.shape)}")
 
 
 def metrics_from_score_rows(rows: list[dict[str, object]]) -> tuple[dict, dict[str, float], dict[str, object]]:

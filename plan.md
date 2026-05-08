@@ -88,6 +88,11 @@ Current best result:
 
 - log-mel LCNN, no external pretraining: 0.75% dev EER, 5.67% eval EER
 
+Deferred Phase 1 polish:
+
+- Add selected neural plots from `lcnn_logmel_full_seed42_30ep` to README and
+  `results.md` if they materially improve the public project story.
+
 See `results.md` for the authoritative results ledger.
 
 ## System Architecture
@@ -235,8 +240,8 @@ Goal: cover raw waveform and graph attention methods.
 
 Model candidates:
 
-- AASIST-lite inspired model
-- optional RawNet2-style baseline if useful
+- AASIST-lite inspired model. In progress: `aasist_lite_waveform`.
+- optional RawNet2-style baseline if useful after the first AASIST-lite result
 
 Metrics:
 
@@ -248,6 +253,24 @@ Exit criteria:
 
 - AASIST-lite result compared against LFCC-GMM and spectrogram CNN.
 - Architecture and implementation clearly documented.
+
+Implementation plan:
+
+- Use raw mono waveforms at 16 kHz.
+- Use fixed 64,600-sample crop/pad inputs.
+- Train from scratch with no pretrained AASIST weights.
+- Use two-class cross entropy and score with bonafide softmax probability.
+- Run one controlled full Colab config before considering any dev-only targeted
+  sweep.
+
+Current implementation status:
+
+- AASIST-lite waveform model implemented.
+- Waveform dataset path implemented.
+- Configs added: `configs/neural_aasist_lite*.json`.
+- Make targets added: `aasist-smoke`, `aasist-train`.
+- Local smoke run passed: `aasist_lite_waveform_smoke_seed42_1ep`.
+- Full Colab dev/eval run pending.
 
 ### Phase 3: SSL Embedding Countermeasure
 
@@ -463,3 +486,8 @@ Parallel agents should:
 - [x] Neural evaluation script
 - [x] Phase 1 smoke run
 - [x] Phase 1 full dev/eval run
+- [x] Phase 2 AASIST-lite planning
+- [x] Phase 2 waveform dataset path
+- [x] Phase 2 AASIST-lite model/configs
+- [x] Phase 2 local smoke run
+- [ ] Phase 2 full dev/eval run

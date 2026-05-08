@@ -61,6 +61,40 @@ class ASVspoofSpectrogramDataset(Dataset):
         }
 
 
+class ASVspoofWaveformDataset(Dataset):
+    """Dataset that loads audio and returns fixed-size raw waveforms."""
+
+    def __init__(
+        self,
+        samples: list[Sample],
+        sample_rate: int,
+        num_samples: int,
+    ) -> None:
+        self.samples = samples
+        self.sample_rate = sample_rate
+        self.num_samples = num_samples
+
+    def __len__(self) -> int:
+        return len(self.samples)
+
+    def __getitem__(self, idx: int) -> dict[str, object]:
+        sample = self.samples[idx]
+        audio, sr = sf.read(sample.path, dtype="float32", always_2d=False)
+        waveform = torch.from_numpy(np.asarray(audio))
+        if waveform.ndim == 2:
+            waveform = waveform.mean(dim=1)
+        if sr != self.sample_rate:
+            waveform = AF.resample(waveform, sr, self.sample_rate)
+        waveform = crop_or_pad(waveform, self.num_samples)
+        return {
+            "x": waveform.to(torch.float32),
+            "label": torch.tensor(sample.label, dtype=torch.float32),
+            "file_id": sample.file_id,
+            "path": sample.path,
+            "system_id": sample.system_id,
+        }
+
+
 def load_limited_split(
     data_root: str,
     split: str,
