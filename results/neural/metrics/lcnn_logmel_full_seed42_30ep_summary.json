@@ -1,0 +1,84 @@
+{
+  "run_id": "lcnn_logmel_full_seed42_30ep",
+  "commit": "878b6f8",
+  "config_path": "configs/neural_lcnn.json",
+  "track": "protocol_comparable",
+  "external_pretraining": false,
+  "model_family": "lcnn",
+  "model_name": "lcnn_logmel_full",
+  "feature_or_input": "logmel",
+  "model_parameters": 665153,
+  "seed": 42,
+  "training_seconds": 553.1310248374939,
+  "artifact_path": "results/neural/lcnn_logmel_full_seed42_30ep",
+  "splits": {
+    "dev": {
+      "eer": 0.007456828885491762,
+      "accuracy": 0.992714538721623,
+      "threshold": 0.0037882563462692566,
+      "confusion_matrix": [
+        [
+          22134,
+          162
+        ],
+        [
+          19,
+          2529
+        ]
+      ],
+      "split_summary": {
+        "total": 24844,
+        "bonafide": 2548,
+        "spoof": 22296
+      },
+      "per_attack_eer": {
+        "A01": 0.007456828885401852,
+        "A02": 0.00470957613843672,
+        "A03": 0.003532182103395779,
+        "A04": 0.005886970172684512,
+        "A05": 0.014128728414794593,
+        "A06": 0.005920344456984324
+      }
+    },
+    "eval": {
+      "eer": 0.056696125084976186,
+      "accuracy": 0.9433159734407681,
+      "threshold": 0.9237799169659048,
+      "confusion_matrix": [
+        [
+          60261,
+          3621
+        ],
+        [
+          417,
+          6938
+        ]
+      ],
+      "split_summary": {
+        "total": 71237,
+        "bonafide": 7355,
+        "spoof": 63882
+      },
+      "per_attack_eer": {
+        "A07": 0.005030591434398232,
+        "A08": 0.044159544158182816,
+        "A09": 0.006512006510732899,
+        "A10": 0.008837525492862017,
+        "A11": 0.005710401087695598,
+        "A12": 0.008293677770224106,
+        "A13": 0.009381373215501785,
+        "A14": 0.010378510379204292,
+        "A15": 0.006798096532995683,
+        "A16": 0.008343508342944053,
+        "A17": 0.2039428959887815,
+        "A18": 0.08742352141404695,
+        "A19": 0.035486063902107456
+      }
+    }
+  },
+  "notes": [
+    "Best checkpoint selected by dev EER.",
+    "Accuracy values use split-specific EER thresholds and are secondary diagnostics.",
+    "Raw ROC arrays, scores, and checkpoint are intentionally excluded from this lightweight committed summary."
+  ]
+}

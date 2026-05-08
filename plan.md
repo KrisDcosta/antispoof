@@ -81,10 +81,12 @@ Completed:
 - comparison against published LFCC-GMM and CQCC-GMM references
 - reproducible Makefile/config workflow
 - smoke tests and unit tests
+- PyTorch ASVspoof dataset, log-mel transform, and LCNN training pipeline
+- Phase 1 LCNN full dev/eval run on Colab A100
 
 Current best result:
 
-- LFCC GMM-LLR: 0.06% dev EER, 10.25% eval EER
+- log-mel LCNN, no external pretraining: 0.75% dev EER, 5.67% eval EER
 
 See `results.md` for the authoritative results ledger.
 
@@ -211,9 +213,9 @@ Metrics:
 
 Exit criteria:
 
-- Full dev/eval run completed.
+- Full dev/eval run completed. Done: `lcnn_logmel_full_seed42_30ep`.
 - Results added to `results.md`.
-- Plots generated.
+- Plots generated in the Colab run artifact folder.
 - README updated with neural comparison.
 
 Search strategy:
@@ -221,8 +223,9 @@ Search strategy:
 - Start with the checked-in LCNN/log-mel config.
 - Do not tune against eval during development.
 - After the first full dev/eval run, allow a small targeted dev-only sweep over
-  learning rate, dropout, clip length, and model width if the baseline is
-  clearly undertrained or unstable.
+  learning rate, dropout, clip length, and model width only if it is framed as a
+  robustness/generalization study. The first full run is already strong enough
+  to serve as the Phase 1 baseline.
 - Report all accepted runs in `results.md`; do not cherry-pick undocumented
   trials.
 
@@ -459,4 +462,4 @@ Parallel agents should:
 - [x] Neural training script
 - [x] Neural evaluation script
 - [x] Phase 1 smoke run
-- [ ] Phase 1 full dev/eval run
+- [x] Phase 1 full dev/eval run

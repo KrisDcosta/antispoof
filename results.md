@@ -41,6 +41,22 @@ Reference metadata is stored in `references/standard_baselines.json`.
 
 ## Current Project Results
 
+Configuration for current neural run:
+
+- model: LCNN-style log-mel PyTorch countermeasure
+- input: 4-second crop/pad waveform, 64-bin log-mel spectrogram
+- optimizer: AdamW, learning rate 0.0003, weight decay 1e-6
+- epochs: 30, best checkpoint selected by dev EER
+- seed: 42
+- external pretraining: false
+- data: official ASVspoof 2019 LA train/dev/eval CM protocols
+
+Neural run command:
+
+```bash
+python scripts/train_neural.py --config configs/neural_lcnn.json
+```
+
 Configuration for current classical runs:
 
 - classifier: dual-GMM log-likelihood ratio
@@ -64,12 +80,14 @@ python scripts/train_eval.py \
 
 | Run ID | Track | Feature / Model | Dev EER | Eval EER | Status | Evidence |
 |---|---|---|---:|---:|---|---|
-| `gmm_lfcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | LFCC GMM-LLR | 0.06% | 10.25% | Current best project eval result | `results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
+| `lcnn_logmel_full_seed42_30ep` | Protocol-comparable | log-mel LCNN, no external pretraining | 0.75% | 5.67% | Current best project eval result | `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json` |
+| `gmm_lfcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | LFCC GMM-LLR | 0.06% | 10.25% | Strong classical baseline | `results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
 | `gmm_cqcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | CQCC GMM-LLR | 11.15% | 11.59% | Valid classical run; simplified CQCC extractor | `results/baseline/metrics/gmm_cqcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
 | `gmm_mfcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | MFCC GMM-LLR | 9.77% | 16.41% | Valid classical run; weaker eval generalization | `results/baseline/metrics/gmm_mfcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
 
 Summary artifacts:
 
+- `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
@@ -77,16 +95,30 @@ Summary artifacts:
 
 ## Interpretation
 
-The LFCC GMM-LLR system is close to the published LFCC-GMM eval reference, but
-does not match it:
+The Phase 1 log-mel LCNN is the current best project result:
+
+- project LCNN eval EER: 5.67%
+- published LFCC-GMM eval EER: 8.09%
+- published CQCC-GMM eval EER: 9.57%
+- improvement over published LFCC-GMM: 2.42 percentage points
+- improvement over published CQCC-GMM: 3.90 percentage points
+
+The model is trained from scratch with no external pretraining, so it remains in
+the protocol-comparable track.
+
+The LFCC GMM-LLR system is still a strong classical baseline and is close to
+the published LFCC-GMM eval reference, but does not match it:
 
 - project LFCC-GMM eval EER: 10.25%
 - published LFCC-GMM eval EER: 8.09%
 - gap: 2.16 percentage points
 
-The dev result is much stronger than eval, which is expected because eval
-contains unseen attack families. Future neural, waveform, and SSL models should
-be judged primarily by eval EER and per-attack behavior.
+The dev result is much stronger than eval for both classical and neural models,
+which is expected because eval contains unseen attack families. Future waveform,
+SSL, and robustness models should be judged primarily by eval EER and per-attack
+behavior. Accuracy is retained as a secondary diagnostic only; neural dev/eval
+accuracy values use split-specific EER thresholds and should not be presented as
+deployment-calibrated operating points.
 
 ## Planned Result Sections
 
@@ -94,8 +126,7 @@ The following sections should be filled as phases complete.
 
 ### Phase 1: PyTorch Spectrogram Countermeasures
 
-Implementation in progress. The local smoke run has passed; full dev/eval
-training is pending Colab/GPU execution.
+Completed first full dev/eval GPU run in Colab on an A100.
 
 Search decision:
 
@@ -104,15 +135,32 @@ Search decision:
 - Any later sweep must be targeted, dev-only, documented, and added to this
   ledger if used in project claims.
 
-Expected entries:
+Full-run validation:
 
-- log-mel CNN
-- LFCC-LCNN or LCNN-style model
-- dev/eval EER
-- per-attack EER
-- parameter count
-- training command
-- run artifact path
+| Run ID | Track | Feature / Model | Params | Train Time | Dev EER | Eval EER | Evidence |
+|---|---|---|---:|---:|---:|---:|---|
+| `lcnn_logmel_full_seed42_30ep` | Protocol-comparable | log-mel LCNN | 665,153 | 553.1s | 0.75% | 5.67% | `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json` |
+
+Eval per-attack EER:
+
+| Attack | EER |
+|---|---:|
+| A07 | 0.50% |
+| A08 | 4.42% |
+| A09 | 0.65% |
+| A10 | 0.88% |
+| A11 | 0.57% |
+| A12 | 0.83% |
+| A13 | 0.94% |
+| A14 | 1.04% |
+| A15 | 0.68% |
+| A16 | 0.83% |
+| A17 | 20.39% |
+| A18 | 8.74% |
+| A19 | 3.55% |
+
+Primary failure modes are concentrated in A17, A18, A08, and A19. These should
+drive the next robustness and explainability checks.
 
 Smoke validation:
 
@@ -213,4 +261,5 @@ Expected entries:
 
 | Date | Change |
 |---|---|
+| 2026-05-08 | Added Phase 1 log-mel LCNN full dev/eval result from Colab A100 run. |
 | 2026-05-07 | Created root results ledger and locked current classical GMM results. |

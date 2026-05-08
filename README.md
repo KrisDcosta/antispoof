@@ -1,10 +1,9 @@
 # Speech Anti-Spoofing on ASVspoof 2019 Logical Access
 
 This project builds a reproducible speech anti-spoofing system for the
-ASVspoof 2019 Logical Access task. It follows the classical countermeasure
-recipe used in strong challenge systems: extract frame-level cepstral features,
-train separate Gaussian mixture models for bonafide and spoofed speech, and
-score each utterance with a log-likelihood ratio.
+ASVspoof 2019 Logical Access task. It includes classical countermeasures based
+on frame-level cepstral features and Gaussian mixture models, plus a PyTorch
+LCNN-style neural countermeasure trained on log-mel spectrograms.
 
 The result is an end-to-end audio ML workflow with dataset validation, EDA,
 feature extraction, model training, scoring, EER evaluation, per-attack
@@ -19,7 +18,7 @@ Project control documents:
 
 ## Method
 
-The classifier is a dual-GMM log-likelihood-ratio system:
+The classical classifier is a dual-GMM log-likelihood-ratio system:
 
 ```text
 score(utterance) = mean_t log p(x_t | GMM_bonafide) - mean_t log p(x_t | GMM_spoof)
@@ -40,6 +39,9 @@ The main configuration uses 64-component diagonal-covariance GMMs, standardized
 frame features, a fixed random seed, and up to 300,000 sampled training frames
 per class.
 
+The neural baseline is an LCNN-style PyTorch model trained from scratch on
+fixed-length log-mel spectrograms, with the best checkpoint selected by dev EER.
+
 ## Results
 
 Full dev/eval runs were completed on the official ASVspoof 2019 LA protocol.
@@ -48,7 +50,8 @@ training.
 
 | Method | Dev EER | Eval EER | Interpretation |
 |---|---:|---:|---|
-| LFCC GMM-LLR | 0.06% | 10.25% | Strongest project result; close to the published LFCC-GMM eval reference |
+| log-mel LCNN, no external pretraining | 0.75% | 5.67% | Strongest project result; trained from scratch on ASVspoof LA |
+| LFCC GMM-LLR | 0.06% | 10.25% | Strong classical baseline; close to the published LFCC-GMM eval reference |
 | CQCC GMM-LLR | 11.15% | 11.59% | Protocol-correct, but uses a simplified Python CQCC extractor |
 | MFCC GMM-LLR | 9.77% | 16.41% | Fits dev better than CQCC, generalizes worse on unseen eval attacks |
 
@@ -59,14 +62,15 @@ Published ASVspoof 2019 LA reference systems:
 | Official LFCC-GMM | 2.71% | 8.09% | [ASVspoof 2019 challenge paper](https://arxiv.org/abs/1904.05441) |
 | Official CQCC-GMM | 0.43% | 9.57% | [ASVspoof 2019 challenge paper](https://arxiv.org/abs/1904.05441) |
 
-The LFCC system is 2.16 percentage points above the published LFCC-GMM eval
-reference. The gap is small enough to make the implementation useful as a
-serious classical countermeasure, while also showing the importance of exact
-feature recipes and unseen-attack evaluation.
+The LCNN improves over the published LFCC-GMM eval reference by 2.42 percentage
+points and over the published CQCC-GMM eval reference by 3.90 percentage points.
+Its largest eval weaknesses are A17, A18, A08, and A19, which makes those
+attacks the priority for robustness and explainability work.
 
 Generated reports:
 
 - `results.md`
+- `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
@@ -157,6 +161,15 @@ make neural-smoke
 
 The neural smoke test validates the PyTorch log-mel LCNN pipeline locally. Its
 EER is not a benchmark because it uses a tiny capped sample and one epoch.
+
+Run the full Phase 1 neural baseline on GPU:
+
+```bash
+python scripts/train_neural.py --config configs/neural_lcnn.json
+```
+
+The recorded full run used a Colab A100 and produced
+`lcnn_logmel_full_seed42_30ep`.
 
 ## Common Commands
 
@@ -269,12 +282,14 @@ SAP/
 │   ├── feature_cache.py  # versioned frame feature cache
 │   ├── features.py       # LFCC/MFCC/CQCC/WCQCC extractors
 │   ├── gmm_baseline.py   # dual-GMM training and LLR scoring
+│   ├── neural/           # PyTorch dataset, transforms, LCNN, evaluation
 │   └── reporting.py      # JSON/CSV/plot reporting helpers
 ├── scripts/
 │   ├── run_project.py
 │   ├── eda.py
 │   ├── train_eval.py
 │   ├── attack_breakdown.py
+│   ├── train_neural.py
 │   └── summarize_results.py
 ├── tests/
 │   ├── test_evaluate.py
