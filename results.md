@@ -82,12 +82,14 @@ python scripts/train_eval.py \
 |---|---|---|---:|---:|---|---|
 | `lcnn_logmel_full_seed42_30ep` | Protocol-comparable | log-mel LCNN, no external pretraining | 0.75% | 5.67% | Current best project eval result | `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json` |
 | `gmm_lfcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | LFCC GMM-LLR | 0.06% | 10.25% | Strong classical baseline | `results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
+| `aasist_lite_waveform_seed42_100ep` | Protocol-comparable | raw-waveform AASIST-lite, no external pretraining | 2.59% | 10.64% | Valid Phase 2 waveform graph-attention baseline; weaker eval generalization than LCNN | `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json` |
 | `gmm_cqcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | CQCC GMM-LLR | 11.15% | 11.59% | Valid classical run; simplified CQCC extractor | `results/baseline/metrics/gmm_cqcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
 | `gmm_mfcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | MFCC GMM-LLR | 9.77% | 16.41% | Valid classical run; weaker eval generalization | `results/baseline/metrics/gmm_mfcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
 
 Summary artifacts:
 
 - `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json`
+- `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
@@ -105,6 +107,19 @@ The Phase 1 log-mel LCNN is the current best project result:
 
 The model is trained from scratch with no external pretraining, so it remains in
 the protocol-comparable track.
+
+The Phase 2 AASIST-lite waveform model is also trained from scratch and remains
+protocol-comparable, but it is not the strongest eval result:
+
+- project AASIST-lite waveform eval EER: 10.64%
+- project LCNN eval EER: 5.67%
+- project LFCC-GMM eval EER: 10.25%
+
+This result is still useful because it provides the project with a raw-waveform
+graph-attention baseline and exposes a different failure profile. Most eval
+errors are concentrated in A17, A18, and A19, suggesting that the compact
+waveform graph model is more brittle on the hardest unseen attack families than
+the log-mel LCNN.
 
 The LFCC GMM-LLR system is still a strong classical baseline and is close to
 the published LFCC-GMM eval reference, but does not match it:
@@ -183,17 +198,44 @@ Smoke interpretation:
 
 ### Phase 2: Waveform and Graph-Attention Countermeasures
 
-Pending.
+Completed first full dev/eval GPU run in Colab.
 
-Expected entries:
+Run command:
 
-- AASIST-lite
-- optional RawNet2-style model
-- dev/eval EER
-- per-attack EER
-- parameter count
-- training command
-- run artifact path
+```bash
+python scripts/train_neural.py --config configs/neural_aasist_lite.json
+```
+
+Full-run validation:
+
+| Run ID | Track | Feature / Model | Params | Train Time | Dev EER | Eval EER | Evidence |
+|---|---|---|---:|---:|---:|---:|---|
+| `aasist_lite_waveform_seed42_100ep` | Protocol-comparable | raw-waveform AASIST-lite | 137,828 | 4298.8s | 2.59% | 10.64% | `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json` |
+
+Eval per-attack EER:
+
+| Attack | EER |
+|---|---:|
+| A07 | 0.31% |
+| A08 | 4.27% |
+| A09 | 0.31% |
+| A10 | 0.45% |
+| A11 | 0.45% |
+| A12 | 0.30% |
+| A13 | 0.29% |
+| A14 | 0.31% |
+| A15 | 0.39% |
+| A16 | 0.88% |
+| A17 | 34.40% |
+| A18 | 25.68% |
+| A19 | 11.58% |
+
+Interpretation:
+
+- The model is effective on many eval attacks but weak on A17, A18, and A19.
+- It does not beat the Phase 1 LCNN or LFCC-GMM eval result.
+- It remains valuable as the raw-waveform graph-attention baseline for later
+  robustness and explainability comparisons.
 
 ### Phase 3: SSL Embedding Countermeasures
 
@@ -261,5 +303,6 @@ Expected entries:
 
 | Date | Change |
 |---|---|
+| 2026-05-09 | Added Phase 2 AASIST-lite waveform full dev/eval result from Colab run. |
 | 2026-05-08 | Added Phase 1 log-mel LCNN full dev/eval result from Colab A100 run. |
 | 2026-05-07 | Created root results ledger and locked current classical GMM results. |

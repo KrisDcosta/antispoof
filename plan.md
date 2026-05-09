@@ -240,7 +240,8 @@ Goal: cover raw waveform and graph attention methods.
 
 Model candidates:
 
-- AASIST-lite inspired model. In progress: `aasist_lite_waveform`.
+- AASIST-lite inspired model. Completed first full run:
+  `aasist_lite_waveform_seed42_100ep`.
 - optional RawNet2-style baseline if useful after the first AASIST-lite result
 
 Metrics:
@@ -270,7 +271,12 @@ Current implementation status:
 - Configs added: `configs/neural_aasist_lite*.json`.
 - Make targets added: `aasist-smoke`, `aasist-train`.
 - Local smoke run passed: `aasist_lite_waveform_smoke_seed42_1ep`.
-- Full Colab dev/eval run pending.
+- Full Colab dev/eval run completed:
+  `aasist_lite_waveform_seed42_100ep`.
+- Result: dev EER 2.59%, eval EER 10.64%, 137,828 parameters, 4298.8s
+  training time.
+- Interpretation: useful raw-waveform graph-attention baseline, but weaker eval
+  generalization than the Phase 1 LCNN and slightly weaker than LFCC-GMM.
 
 ### Phase 3: SSL Embedding Countermeasure
 
@@ -490,4 +496,4 @@ Parallel agents should:
 - [x] Phase 2 waveform dataset path
 - [x] Phase 2 AASIST-lite model/configs
 - [x] Phase 2 local smoke run
-- [ ] Phase 2 full dev/eval run
+- [x] Phase 2 full dev/eval run

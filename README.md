@@ -52,6 +52,7 @@ training.
 |---|---:|---:|---|
 | log-mel LCNN, no external pretraining | 0.75% | 5.67% | Strongest project result; trained from scratch on ASVspoof LA |
 | LFCC GMM-LLR | 0.06% | 10.25% | Strong classical baseline; close to the published LFCC-GMM eval reference |
+| AASIST-lite waveform, no external pretraining | 2.59% | 10.64% | Valid raw-waveform graph-attention baseline; weak on hardest unseen attacks |
 | CQCC GMM-LLR | 11.15% | 11.59% | Protocol-correct, but uses a simplified Python CQCC extractor |
 | MFCC GMM-LLR | 9.77% | 16.41% | Fits dev better than CQCC, generalizes worse on unseen eval attacks |
 
@@ -67,10 +68,17 @@ points and over the published CQCC-GMM eval reference by 3.90 percentage points.
 Its largest eval weaknesses are A17, A18, A08, and A19, which makes those
 attacks the priority for robustness and explainability work.
 
+The Phase 2 AASIST-lite waveform run is a valid protocol-comparable
+raw-waveform graph-attention baseline, but it does not beat the LCNN or LFCC
+GMM eval result. Its errors are concentrated in A17, A18, and A19, which makes
+it useful for comparing waveform/graph attention behavior against the
+spectrogram LCNN.
+
 Generated reports:
 
 - `results.md`
 - `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json`
+- `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`

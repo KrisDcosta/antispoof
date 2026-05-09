@@ -1,0 +1,86 @@
+{
+  "run_id": "aasist_lite_waveform_seed42_100ep",
+  "commit": "b23fed2",
+  "config_path": "configs/neural_aasist_lite.json",
+  "track": "protocol_comparable",
+  "external_pretraining": false,
+  "model_family": "aasist_lite",
+  "model_name": "aasist_lite_waveform",
+  "feature_or_input": "waveform",
+  "model_parameters": 137828,
+  "seed": 42,
+  "training_seconds": 4298.836698055267,
+  "artifact_path": "results/neural/aasist_lite_waveform_seed42_100ep",
+  "splits": {
+    "dev": {
+      "eer": 0.0259,
+      "accuracy": 0.9741,
+      "threshold": 0.68,
+      "confusion_matrix": [
+        [
+          21719,
+          577
+        ],
+        [
+          66,
+          2482
+        ]
+      ],
+      "split_summary": {
+        "total": 24844,
+        "bonafide": 2548,
+        "spoof": 22296
+      },
+      "per_attack_eer": {
+        "A01": 0.002,
+        "A02": 0.0016,
+        "A03": 0.002,
+        "A04": 0.0047,
+        "A05": 0.0078,
+        "A06": 0.0719
+      }
+    },
+    "eval": {
+      "eer": 0.1064,
+      "accuracy": 0.8936,
+      "threshold": 0.9944,
+      "confusion_matrix": [
+        [
+          57084,
+          6798
+        ],
+        [
+          783,
+          6572
+        ]
+      ],
+      "split_summary": {
+        "total": 71237,
+        "bonafide": 7355,
+        "spoof": 63882
+      },
+      "per_attack_eer": {
+        "A07": 0.0031,
+        "A08": 0.0427,
+        "A09": 0.0031,
+        "A10": 0.0045,
+        "A11": 0.0045,
+        "A12": 0.003,
+        "A13": 0.0029,
+        "A14": 0.0031,
+        "A15": 0.0039,
+        "A16": 0.0088,
+        "A17": 0.344,
+        "A18": 0.2568,
+        "A19": 0.1158
+      }
+    }
+  },
+  "notes": [
+    "AASIST-lite inspired waveform graph-attention model trained from scratch.",
+    "This is a valid Phase 2 protocol-comparable baseline, but it is not the current best eval result.",
+    "Eval errors are concentrated in A17, A18, and A19.",
+    "Accuracy values use split-specific EER thresholds and are secondary diagnostics.",
+    "Raw ROC arrays, scores, and checkpoint are intentionally excluded from this lightweight committed summary."
+  ]
+}
