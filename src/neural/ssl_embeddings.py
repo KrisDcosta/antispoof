@@ -65,15 +65,15 @@ def transformers_version() -> str:
 
 
 def load_frozen_ssl_encoder(encoder_name: str, device: torch.device):
-    """Load a Hugging Face SSL processor/model pair with gradients disabled."""
+    """Load a Hugging Face SSL feature extractor/model pair with gradients disabled."""
     try:
-        from transformers import AutoModel, AutoProcessor
+        from transformers import AutoFeatureExtractor, AutoModel
     except ImportError as exc:
         raise ImportError(
             "Phase 3 SSL caching requires transformers. Install requirements-neural.txt."
         ) from exc
 
-    processor = AutoProcessor.from_pretrained(encoder_name)
+    processor = AutoFeatureExtractor.from_pretrained(encoder_name)
     model = AutoModel.from_pretrained(encoder_name).to(device)
     model.eval()
     for param in model.parameters():
