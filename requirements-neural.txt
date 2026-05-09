@@ -4,3 +4,5 @@ torch>=2.2
 torchaudio>=2.2
 torchinfo>=1.8
 seaborn>=0.13
+transformers>=4.40
+huggingface_hub>=0.22

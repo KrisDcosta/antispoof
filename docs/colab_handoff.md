@@ -126,6 +126,15 @@ For the Phase 2 AASIST-lite waveform path:
 python scripts/train_neural.py --config configs/neural_aasist_lite_smoke.json
 ```
 
+For the Phase 3 external-pretrained/applied SSL path:
+
+```bash
+python scripts/check_phase3_ssl_ready.py --config configs/neural_ssl_wavlm_frozen_smoke.json
+python scripts/cache_ssl_embeddings.py --config configs/neural_ssl_wavlm_frozen_smoke.json
+python scripts/check_phase3_ssl_ready.py --config configs/neural_ssl_wavlm_frozen_smoke.json --check-caches
+python scripts/train_ssl_head.py --config configs/neural_ssl_wavlm_frozen_smoke.json
+```
+
 Expected output root:
 
 ```text
@@ -143,6 +152,20 @@ For the Phase 2 AASIST-lite waveform run:
 ```bash
 python scripts/train_neural.py --config configs/neural_aasist_lite.json
 ```
+
+For the Phase 3 external-pretrained/applied SSL run:
+
+```bash
+python scripts/check_phase3_ssl_ready.py --config configs/neural_ssl_wavlm_frozen.json
+python scripts/cache_ssl_embeddings.py --config configs/neural_ssl_wavlm_frozen.json
+python scripts/check_phase3_ssl_ready.py --config configs/neural_ssl_wavlm_frozen.json --check-caches
+python scripts/train_ssl_head.py --config configs/neural_ssl_wavlm_frozen.json
+```
+
+Phase 3 caches pooled mean+std vectors, not full SSL frame sequences. Results
+from this track must be labeled external-pretrained/applied and not
+protocol-comparable. See `docs/phase3_gpu_runbook.md` for the bundled smoke,
+full-run, and acceptance sequence.
 
 ## Archiving Full Run Artifacts
 

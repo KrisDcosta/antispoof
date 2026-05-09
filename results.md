@@ -232,10 +232,27 @@ Interpretation:
 - It provides a raw-waveform graph-attention baseline inside the same
   evaluation harness as the classical and LCNN systems.
 
+### Phase 3 SSL Embedding Countermeasure
+
+Pending full run.
+
+Expected first result:
+
+- method: frozen WavLM-base-plus pooled mean+std MLP
+- track: external-pretrained/applied, not protocol-comparable
+- cache representation: `pooled_mean_std` from `last_hidden_state`
+- normalization: train-only mean/std
+- loss: weighted cross entropy
+- required metrics: dev/eval EER and per-attack eval EER
+
+Do not compare this track directly against ASVspoof challenge baselines without
+the adjacent external-pretraining caveat.
+
 ## Change Log
 
 | Date | Change |
 |---|---|
+| 2026-05-09 | Added Phase 3 pooled frozen SSL implementation plan and expected result contract. |
 | 2026-05-09 | Added AASIST-lite waveform full dev/eval result from Colab run. |
 | 2026-05-08 | Added log-mel LCNN full dev/eval result from Colab A100 run. |
 | 2026-05-07 | Created root results ledger and locked current classical GMM results. |

@@ -10,6 +10,7 @@ __pycache__/
 
 # Large or reproducible experiment artifacts
 results/feature_cache*/
+results/cache/
 results/smoke*/
 results/preliminary/
 results/neural/*/

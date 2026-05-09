@@ -89,6 +89,7 @@ def environment_payload(config_path: str, device: torch.device, model_parameters
 
 
 def write_model_card(path: str | os.PathLike, payload: dict) -> None:
+    external = str(payload["external_pretraining"])
     lines = [
         f"# Model Card: {payload['model_name']}",
         "",
@@ -123,10 +124,15 @@ def write_model_card(path: str | os.PathLike, payload: dict) -> None:
         "## Limitations",
         "",
         "- Eval EER is the primary generalization metric.",
-        "- This protocol-comparable neural run does not use external pretrained speech models.",
         "- Accuracy is secondary because ASVspoof splits are class-imbalanced.",
         "- The detector should not be treated as definitive forensic proof.",
-        "",
     ])
+    if external.lower() in {"none", "false", "no"}:
+        lines.insert(-2, "- This protocol-comparable neural run does not use external pretrained speech models.")
+    else:
+        lines.insert(
+            -2,
+            "- This is an external-pretrained/applied result and is not protocol-comparable to ASVspoof challenge systems.",
+        )
+    lines.append("")
     Path(path).write_text("\n".join(lines))
-

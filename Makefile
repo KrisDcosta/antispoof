@@ -1,4 +1,4 @@
-.PHONY: setup test smoke eda train summarize project neural-smoke neural-train aasist-smoke aasist-train
+.PHONY: setup test smoke eda train summarize project neural-smoke neural-train aasist-smoke aasist-train ssl-ready ssl-cache-smoke ssl-smoke ssl-cache ssl-train
 
 PYTHON ?= ./venv/bin/python
 CONFIG ?= configs/asvspoof2019_gmm.json
@@ -7,6 +7,8 @@ NEURAL_CONFIG ?= configs/neural_lcnn.json
 NEURAL_SMOKE_CONFIG ?= configs/neural_lcnn_smoke.json
 AASIST_CONFIG ?= configs/neural_aasist_lite.json
 AASIST_SMOKE_CONFIG ?= configs/neural_aasist_lite_smoke.json
+SSL_CONFIG ?= configs/neural_ssl_wavlm_frozen.json
+SSL_SMOKE_CONFIG ?= configs/neural_ssl_wavlm_frozen_smoke.json
 
 setup:
 	$(PYTHON) -m pip install -r requirements.txt
@@ -28,6 +30,21 @@ aasist-smoke:
 
 aasist-train:
 	$(PYTHON) scripts/train_neural.py --config $(AASIST_CONFIG)
+
+ssl-ready:
+	$(PYTHON) scripts/check_phase3_ssl_ready.py --config $(SSL_CONFIG)
+
+ssl-cache-smoke:
+	$(PYTHON) scripts/cache_ssl_embeddings.py --config $(SSL_SMOKE_CONFIG)
+
+ssl-smoke:
+	$(PYTHON) scripts/train_ssl_head.py --config $(SSL_SMOKE_CONFIG)
+
+ssl-cache:
+	$(PYTHON) scripts/cache_ssl_embeddings.py --config $(SSL_CONFIG)
+
+ssl-train:
+	$(PYTHON) scripts/train_ssl_head.py --config $(SSL_CONFIG)
 
 eda:
 	$(PYTHON) scripts/eda.py --data data/LA --output results/eda

@@ -1,0 +1,46 @@
+{
+  "run_name": "ssl_wavlm_pooled_full",
+  "track": "external-pretrained/applied",
+  "model": {
+    "type": "ssl_pooled_mlp",
+    "input": "wavlm_pooled_mean_std",
+    "input_dim": 1536,
+    "hidden_dim": 256,
+    "dropout": 0.3
+  },
+  "ssl": {
+    "encoder_name": "microsoft/wavlm-base-plus",
+    "encoder_slug": "wavlm_base_plus",
+    "hidden_state_source": "last_hidden_state",
+    "cache_representation": "pooled_mean_std",
+    "external_pretraining": true
+  },
+  "cache": {
+    "root": "results/cache/ssl"
+  },
+  "data": {
+    "root": "data/LA",
+    "sample_rate": 16000,
+    "num_samples": 64600,
+    "train_limit": null,
+    "eval_limit": null,
+    "splits": ["dev", "eval"]
+  },
+  "training": {
+    "epochs": 50,
+    "batch_size": 128,
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "optimizer": "adamw",
+    "loss": "weighted_cross_entropy",
+    "normalization": "train_mean_std",
+    "num_workers": 2,
+    "seed": 42,
+    "device": "auto"
+  },
+  "output": {
+    "root": "results/neural",
+    "save_scores": true,
+    "save_checkpoint": true
+  }
+}

@@ -32,6 +32,20 @@ generic app or leaderboard-only experiment.
 | Hyperparameter search | Use controlled configs; do not tune on eval |
 | Storage policy | Keep dataset audio, checkpoints, score files, and large caches out of git |
 
+## Phase 3 Extension: External-Pretrained SSL Track
+
+Planned but not yet reported as a result:
+
+- frozen `microsoft/wavlm-base-plus` encoder
+- pooled mean+std cache from `last_hidden_state`
+- train-only feature normalization
+- weighted-cross-entropy MLP classifier
+- strict track label: external-pretrained/applied, not protocol-comparable
+
+This track tests representation transfer from a pretrained speech model. It
+must be discussed separately from protocol-comparable ASVspoof challenge
+systems because the encoder uses external pretraining.
+
 ## Completed Scope
 
 Implemented and validated:

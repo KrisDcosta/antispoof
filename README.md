@@ -16,6 +16,8 @@ Project control documents:
 - `results.md`: authoritative results ledger for reported numbers
 - `docs/run_artifact_contract.md`: expected structure for experiment outputs
 - `docs/colab_handoff.md`: Colab/VSCode GPU run instructions
+- `docs/phase3_ssl_plan.md`: Phase 3 external-pretrained SSL plan
+- `docs/phase3_gpu_runbook.md`: Phase 3 bundled GPU execution checklist
 
 ## Method
 
