@@ -2,8 +2,9 @@
 
 This project builds a reproducible speech anti-spoofing system for the
 ASVspoof 2019 Logical Access task. It includes classical countermeasures based
-on frame-level cepstral features and Gaussian mixture models, plus a PyTorch
-LCNN-style neural countermeasure trained on log-mel spectrograms.
+on frame-level cepstral features and Gaussian mixture models, a PyTorch
+LCNN-style neural countermeasure trained on log-mel spectrograms, and a
+raw-waveform AASIST-lite graph-attention baseline.
 
 The result is an end-to-end audio ML workflow with dataset validation, EDA,
 feature extraction, model training, scoring, EER evaluation, per-attack
@@ -11,9 +12,9 @@ diagnostics, and comparison against published ASVspoof reference systems.
 
 Project control documents:
 
-- `plan.md`: roadmap, architecture, phase gates, and implementation rules
+- `plan.md`: completed scope, architecture, and implementation rules
 - `results.md`: authoritative results ledger for reported numbers
-- `docs/run_artifact_contract.md`: expected structure for future experiment outputs
+- `docs/run_artifact_contract.md`: expected structure for experiment outputs
 - `docs/colab_handoff.md`: Colab/VSCode GPU run instructions
 
 ## Method
@@ -41,6 +42,9 @@ per class.
 
 The neural baseline is an LCNN-style PyTorch model trained from scratch on
 fixed-length log-mel spectrograms, with the best checkpoint selected by dev EER.
+The waveform baseline is an AASIST-lite inspired model trained directly on
+fixed-length 16 kHz waveform crops, also from scratch and without external
+pretraining.
 
 ## Results
 
@@ -65,14 +69,14 @@ Published ASVspoof 2019 LA reference systems:
 
 The LCNN improves over the published LFCC-GMM eval reference by 2.42 percentage
 points and over the published CQCC-GMM eval reference by 3.90 percentage points.
-Its largest eval weaknesses are A17, A18, A08, and A19, which makes those
-attacks the priority for robustness and explainability work.
+Its largest eval weaknesses are A17, A18, A08, and A19, which define the
+residual error profile of the strongest model.
 
-The Phase 2 AASIST-lite waveform run is a valid protocol-comparable
-raw-waveform graph-attention baseline, but it does not beat the LCNN or LFCC
-GMM eval result. Its errors are concentrated in A17, A18, and A19, which makes
-it useful for comparing waveform/graph attention behavior against the
-spectrogram LCNN.
+The AASIST-lite waveform run is a valid protocol-comparable raw-waveform
+graph-attention baseline, but it does not beat the LCNN or LFCC GMM eval
+result. Its errors are concentrated in A17, A18, and A19, which makes it useful
+for comparing waveform/graph-attention behavior against the spectrogram LCNN
+within the same reproducible evaluation harness.
 
 Generated reports:
 
@@ -161,7 +165,7 @@ Equivalent direct command:
 python scripts/run_project.py --config configs/asvspoof2019_gmm.json
 ```
 
-Run the Phase 1 neural smoke test:
+Run the LCNN neural smoke test:
 
 ```bash
 make neural-smoke
@@ -170,7 +174,7 @@ make neural-smoke
 The neural smoke test validates the PyTorch log-mel LCNN pipeline locally. Its
 EER is not a benchmark because it uses a tiny capped sample and one epoch.
 
-Run the full Phase 1 neural baseline on GPU:
+Run the full LCNN neural baseline on GPU:
 
 ```bash
 python scripts/train_neural.py --config configs/neural_lcnn.json
@@ -179,13 +183,13 @@ python scripts/train_neural.py --config configs/neural_lcnn.json
 The recorded full run used a Colab A100 and produced
 `lcnn_logmel_full_seed42_30ep`.
 
-Run the Phase 2 AASIST-lite waveform smoke test:
+Run the AASIST-lite waveform smoke test:
 
 ```bash
 make aasist-smoke
 ```
 
-Run the full Phase 2 AASIST-lite waveform baseline on GPU:
+Run the full AASIST-lite waveform baseline on GPU:
 
 ```bash
 python scripts/train_neural.py --config configs/neural_aasist_lite.json

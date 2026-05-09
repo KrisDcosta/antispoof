@@ -2,9 +2,8 @@
 
 This file is the human-readable source of truth for reported project results.
 Machine-readable evidence lives under `results/**/metrics/`, `results/**/summary/`,
-and model-specific run folders. Any new result used in the README, app, report
-assistant, or resume bullets should be added here with the run command and
-evaluation setting.
+and model-specific run folders. Result claims used in the README, reports, or
+resume bullets should be traceable to this ledger.
 
 ## Reporting Rules
 
@@ -82,7 +81,7 @@ python scripts/train_eval.py \
 |---|---|---|---:|---:|---|---|
 | `lcnn_logmel_full_seed42_30ep` | Protocol-comparable | log-mel LCNN, no external pretraining | 0.75% | 5.67% | Current best project eval result | `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json` |
 | `gmm_lfcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | LFCC GMM-LLR | 0.06% | 10.25% | Strong classical baseline | `results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
-| `aasist_lite_waveform_seed42_100ep` | Protocol-comparable | raw-waveform AASIST-lite, no external pretraining | 2.59% | 10.64% | Valid Phase 2 waveform graph-attention baseline; weaker eval generalization than LCNN | `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json` |
+| `aasist_lite_waveform_seed42_100ep` | Protocol-comparable | raw-waveform AASIST-lite, no external pretraining | 2.59% | 10.64% | Valid waveform graph-attention baseline; weaker eval generalization than LCNN | `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json` |
 | `gmm_cqcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | CQCC GMM-LLR | 11.15% | 11.59% | Valid classical run; simplified CQCC extractor | `results/baseline/metrics/gmm_cqcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
 | `gmm_mfcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | MFCC GMM-LLR | 9.77% | 16.41% | Valid classical run; weaker eval generalization | `results/baseline/metrics/gmm_mfcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
 
@@ -97,7 +96,7 @@ Summary artifacts:
 
 ## Interpretation
 
-The Phase 1 log-mel LCNN is the current best project result:
+The log-mel LCNN is the current best project result:
 
 - project LCNN eval EER: 5.67%
 - published LFCC-GMM eval EER: 8.09%
@@ -108,7 +107,7 @@ The Phase 1 log-mel LCNN is the current best project result:
 The model is trained from scratch with no external pretraining, so it remains in
 the protocol-comparable track.
 
-The Phase 2 AASIST-lite waveform model is also trained from scratch and remains
+The AASIST-lite waveform model is also trained from scratch and remains
 protocol-comparable, but it is not the strongest eval result:
 
 - project AASIST-lite waveform eval EER: 10.64%
@@ -129,17 +128,14 @@ the published LFCC-GMM eval reference, but does not match it:
 - gap: 2.16 percentage points
 
 The dev result is much stronger than eval for both classical and neural models,
-which is expected because eval contains unseen attack families. Future waveform,
-SSL, and robustness models should be judged primarily by eval EER and per-attack
-behavior. Accuracy is retained as a secondary diagnostic only; neural dev/eval
-accuracy values use split-specific EER thresholds and should not be presented as
-deployment-calibrated operating points.
+which is expected because eval contains unseen attack families. Accuracy is
+retained as a secondary diagnostic only; neural dev/eval accuracy values use
+split-specific EER thresholds and should not be presented as deployment-calibrated
+operating points.
 
-## Planned Result Sections
+## Completed Run Details
 
-The following sections should be filled as phases complete.
-
-### Phase 1: PyTorch Spectrogram Countermeasures
+### Log-Mel LCNN Countermeasure
 
 Completed first full dev/eval GPU run in Colab on an A100.
 
@@ -147,8 +143,8 @@ Search decision:
 
 - No broad grid search before the first valid neural baseline.
 - First run uses the checked-in LCNN/log-mel config.
-- Any later sweep must be targeted, dev-only, documented, and added to this
-  ledger if used in project claims.
+- The accepted project result is the full run below; no undocumented search
+  trials are used in the project claims.
 
 Full-run validation:
 
@@ -174,8 +170,7 @@ Eval per-attack EER:
 | A18 | 8.74% |
 | A19 | 3.55% |
 
-Primary failure modes are concentrated in A17, A18, A08, and A19. These should
-drive the next robustness and explainability checks.
+Primary failure modes are concentrated in A17, A18, A08, and A19.
 
 Smoke validation:
 
@@ -196,7 +191,7 @@ Smoke interpretation:
 - The run validates dataloading, log-mel extraction, training, scoring,
   metrics, plots, checkpointing, and model-card generation.
 
-### Phase 2: Waveform and Graph-Attention Countermeasures
+### AASIST-Lite Waveform Countermeasure
 
 Completed first full dev/eval GPU run in Colab.
 
@@ -233,76 +228,14 @@ Eval per-attack EER:
 Interpretation:
 
 - The model is effective on many eval attacks but weak on A17, A18, and A19.
-- It does not beat the Phase 1 LCNN or LFCC-GMM eval result.
-- It remains valuable as the raw-waveform graph-attention baseline for later
-  robustness and explainability comparisons.
-
-### Phase 3: SSL Embedding Countermeasures
-
-Pending.
-
-Expected entries:
-
-- frozen WavLM/wav2vec2 classifier
-- adapter/LoRA or top-layer fine-tuned variant, if run
-- explicit external-pretraining label
-- dev/eval EER
-- embedding cache notes
-
-### Phase 4: Robustness Sweeps
-
-Pending.
-
-Expected entries:
-
-- model
-- corruption type
-- corruption severity
-- clean EER
-- corrupted EER
-- delta EER
-- run artifact path
-
-### Phase 5: Explainability
-
-Pending.
-
-Expected entries:
-
-- GMM frame-level LLR traces
-- CNN saliency/Grad-CAM examples
-- AASIST attention examples, if reliable
-- representative sample IDs
-- interpretation caveats
-
-### Phase 6: Agentic/RAG Assistant
-
-Pending.
-
-Expected entries:
-
-- retrieval corpus version
-- supported tools
-- evaluation checks
-- example report path
-- hallucination/grounding safeguards
-
-### Phase 7: Local Analyst App
-
-Pending.
-
-Expected entries:
-
-- app command
-- supported models
-- supported visualizations
-- screenshot paths
-- limitations
+- It does not beat the LCNN or LFCC-GMM eval result.
+- It provides a raw-waveform graph-attention baseline inside the same
+  evaluation harness as the classical and LCNN systems.
 
 ## Change Log
 
 | Date | Change |
 |---|---|
-| 2026-05-09 | Added Phase 2 AASIST-lite waveform full dev/eval result from Colab run. |
-| 2026-05-08 | Added Phase 1 log-mel LCNN full dev/eval result from Colab A100 run. |
+| 2026-05-09 | Added AASIST-lite waveform full dev/eval result from Colab run. |
+| 2026-05-08 | Added log-mel LCNN full dev/eval result from Colab A100 run. |
 | 2026-05-07 | Created root results ledger and locked current classical GMM results. |
