@@ -80,6 +80,7 @@ python scripts/train_eval.py \
 | Run ID | Track | Feature / Model | Dev EER | Eval EER | Status | Evidence |
 |---|---|---|---:|---:|---|---|
 | `lcnn_logmel_full_seed42_30ep` | Protocol-comparable | log-mel LCNN, no external pretraining | 0.75% | 5.67% | Current best project eval result | `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json` |
+| `ssl_wavlm_pooled_full_seed42_50ep` | External-pretrained/applied | frozen WavLM-base-plus mean+std MLP | 3.02% | 5.08% | Best numeric eval EER; not protocol-comparable because WavLM uses external pretraining | `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json` |
 | `gmm_lfcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | LFCC GMM-LLR | 0.06% | 10.25% | Strong classical baseline | `results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
 | `aasist_lite_waveform_seed42_100ep` | Protocol-comparable | raw-waveform AASIST-lite, no external pretraining | 2.59% | 10.64% | Valid waveform graph-attention baseline; weaker eval generalization than LCNN | `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json` |
 | `gmm_cqcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | CQCC GMM-LLR | 11.15% | 11.59% | Valid classical run; simplified CQCC extractor | `results/baseline/metrics/gmm_cqcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
@@ -89,6 +90,7 @@ Summary artifacts:
 
 - `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json`
 - `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json`
+- `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
@@ -106,6 +108,17 @@ The log-mel LCNN is the current best project result:
 
 The model is trained from scratch with no external pretraining, so it remains in
 the protocol-comparable track.
+
+The frozen WavLM pooled embedding classifier is the best numeric eval result:
+
+- project WavLM pooled MLP eval EER: 5.08%
+- project LCNN eval EER: 5.67%
+- track: external-pretrained/applied
+
+This result must be reported separately from the protocol-comparable ASVspoof
+challenge-style systems because `microsoft/wavlm-base-plus` was pretrained on
+external speech data. It is useful as an applied audio ML comparison showing
+that frozen SSL speech representations contain spoof-relevant information.
 
 The AASIST-lite waveform model is also trained from scratch and remains
 protocol-comparable, but it is not the strongest eval result:
@@ -232,26 +245,54 @@ Interpretation:
 - It provides a raw-waveform graph-attention baseline inside the same
   evaluation harness as the classical and LCNN systems.
 
-### Phase 3 SSL Embedding Countermeasure
+### Frozen WavLM SSL Embedding Countermeasure
 
-Pending full run.
+Completed full dev/eval GPU run in Colab.
 
-Expected first result:
+Run command:
 
-- method: frozen WavLM-base-plus pooled mean+std MLP
-- track: external-pretrained/applied, not protocol-comparable
-- cache representation: `pooled_mean_std` from `last_hidden_state`
-- normalization: train-only mean/std
-- loss: weighted cross entropy
-- required metrics: dev/eval EER and per-attack eval EER
+```bash
+python scripts/cache_ssl_embeddings.py --config configs/neural_ssl_wavlm_frozen.json
+python scripts/train_ssl_head.py --config configs/neural_ssl_wavlm_frozen.json
+```
 
-Do not compare this track directly against ASVspoof challenge baselines without
-the adjacent external-pretraining caveat.
+Full-run validation:
+
+| Run ID | Track | Feature / Model | Params | Train Time | Dev EER | Eval EER | Evidence |
+|---|---|---|---:|---:|---:|---:|---|
+| `ssl_wavlm_pooled_full_seed42_50ep` | External-pretrained/applied | frozen WavLM-base-plus mean+std MLP | 393,986 | 58.8s | 3.02% | 5.08% | `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json` |
+
+Eval per-attack EER:
+
+| Attack | EER |
+|---|---:|
+| A07 | 0.37% |
+| A08 | 2.73% |
+| A09 | 0.15% |
+| A10 | 1.11% |
+| A11 | 0.69% |
+| A12 | 0.22% |
+| A13 | 0.06% |
+| A14 | 0.86% |
+| A15 | 0.63% |
+| A16 | 0.60% |
+| A17 | 6.57% |
+| A18 | 8.02% |
+| A19 | 19.82% |
+
+Interpretation:
+
+- The WavLM pooled MLP is the best numeric eval EER in the project.
+- It is not protocol-comparable to ASVspoof challenge systems because the
+  frozen encoder uses external pretraining.
+- It sharply improves A17 and A18 compared with the scratch-trained LCNN, but
+  A19 remains the largest eval weakness.
 
 ## Change Log
 
 | Date | Change |
 |---|---|
+| 2026-05-09 | Added accepted frozen WavLM pooled SSL full dev/eval result. |
 | 2026-05-09 | Added Phase 3 pooled frozen SSL implementation plan and expected result contract. |
 | 2026-05-09 | Added AASIST-lite waveform full dev/eval result from Colab run. |
 | 2026-05-08 | Added log-mel LCNN full dev/eval result from Colab A100 run. |

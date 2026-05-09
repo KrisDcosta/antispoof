@@ -1,7 +1,8 @@
 # Phase 3 GPU Runbook
 
-Use this when GPU time is available. All non-GPU implementation and synthetic
-validation should already be complete before starting this sequence.
+Use this to reproduce the accepted frozen WavLM SSL run. All non-GPU
+implementation and synthetic validation should already be complete before
+starting this sequence.
 
 ## Preflight
 
@@ -69,4 +70,24 @@ Update `results.md` only after acceptance, using adjacent caveat wording:
 
 ```text
 external-pretrained/applied, not protocol-comparable
+```
+
+## Accepted Full Result
+
+The accepted Colab run produced:
+
+```text
+run_id: ssl_wavlm_pooled_full_seed42_50ep
+track: external-pretrained/applied
+external_pretraining: true
+model_parameters: 393986
+training_seconds: 58.759225845336914
+dev: EER=3.02% accuracy=96.98% threshold=0.0000
+eval: EER=5.08% accuracy=94.91% threshold=0.2170
+```
+
+The compact committed summary is:
+
+```text
+results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json
 ```

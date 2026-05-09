@@ -32,9 +32,9 @@ generic app or leaderboard-only experiment.
 | Hyperparameter search | Use controlled configs; do not tune on eval |
 | Storage policy | Keep dataset audio, checkpoints, score files, and large caches out of git |
 
-## Phase 3 Extension: External-Pretrained SSL Track
+## Applied Extension: External-Pretrained SSL Track
 
-Planned but not yet reported as a result:
+Completed as a separately labeled applied result:
 
 - frozen `microsoft/wavlm-base-plus` encoder
 - pooled mean+std cache from `last_hidden_state`
@@ -62,6 +62,7 @@ Implemented and validated:
 - PyTorch dataset, log-mel transform, and LCNN training pipeline
 - raw-waveform crop/pad path
 - AASIST-lite inspired waveform model
+- frozen WavLM pooled SSL embedding baseline
 - Colab handoff workflow for GPU training and artifact archival
 
 ## Completed Results
@@ -73,6 +74,7 @@ Implemented and validated:
 | MFCC GMM-LLR | MFCC | n/a | 9.77% | 16.41% | MFCC ablation |
 | log-mel LCNN | log-mel spectrogram | 665,153 | 0.75% | 5.67% | strongest project result |
 | AASIST-lite waveform | raw waveform | 137,828 | 2.59% | 10.64% | waveform graph-attention baseline |
+| frozen WavLM pooled MLP | WavLM mean+std embeddings | 393,986 | 3.02% | 5.08% | strongest applied result; external-pretrained |
 
 Best result:
 
@@ -81,6 +83,13 @@ Best result:
 - trained from scratch on ASVspoof LA
 - no external pretraining
 - better eval EER than published LFCC-GMM and CQCC-GMM reference baselines
+
+Best applied result:
+
+- `ssl_wavlm_pooled_full_seed42_50ep`
+- 5.08% eval EER
+- frozen `microsoft/wavlm-base-plus` encoder
+- external-pretrained/applied, not protocol-comparable
 
 See `results.md` for run commands, per-attack EER, and evidence paths.
 
@@ -95,14 +104,17 @@ flowchart LR
   D --> E1["Classical DSP features<br/>LFCC / MFCC / CQCC"]
   D --> E2["Spectrogram features<br/>log-mel"]
   D --> E3["Raw waveform"]
+  D --> E4["Frozen SSL embeddings<br/>WavLM mean+std"]
 
   E1 --> F1["Dual GMM LLR"]
   E2 --> F2["PyTorch LCNN"]
   E3 --> F3["AASIST-lite waveform model"]
+  E4 --> F4["MLP classifier head"]
 
   F1 --> G["Score CSV + metrics JSON"]
   F2 --> G
   F3 --> G
+  F4 --> G
 
   G --> H["Evaluation<br/>EER / per-attack EER / ROC"]
   H --> I["results.md"]
@@ -167,9 +179,12 @@ Compact summaries are committed under `results/**/metrics/`.
 - [x] Log-mel feature transform
 - [x] LCNN model
 - [x] AASIST-lite waveform model
+- [x] Frozen WavLM pooled embedding cache
+- [x] SSL MLP classifier head
 - [x] Neural training script
 - [x] Neural evaluation script
 - [x] Local smoke runs
 - [x] Full LCNN dev/eval run
 - [x] Full AASIST-lite dev/eval run
+- [x] Full frozen WavLM dev/eval run
 - [x] README and results ledger updated with final metrics

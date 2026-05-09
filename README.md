@@ -4,7 +4,8 @@ This project builds a reproducible speech anti-spoofing system for the
 ASVspoof 2019 Logical Access task. It includes classical countermeasures based
 on frame-level cepstral features and Gaussian mixture models, a PyTorch
 LCNN-style neural countermeasure trained on log-mel spectrograms, and a
-raw-waveform AASIST-lite graph-attention baseline.
+raw-waveform AASIST-lite graph-attention baseline. It also includes an
+external-pretrained frozen WavLM embedding classifier as an applied comparison.
 
 The result is an end-to-end audio ML workflow with dataset validation, EDA,
 feature extraction, model training, scoring, EER evaluation, per-attack
@@ -16,8 +17,8 @@ Project control documents:
 - `results.md`: authoritative results ledger for reported numbers
 - `docs/run_artifact_contract.md`: expected structure for experiment outputs
 - `docs/colab_handoff.md`: Colab/VSCode GPU run instructions
-- `docs/phase3_ssl_plan.md`: Phase 3 external-pretrained SSL plan
-- `docs/phase3_gpu_runbook.md`: Phase 3 bundled GPU execution checklist
+- `docs/phase3_ssl_plan.md`: external-pretrained SSL design and accepted result
+- `docs/phase3_gpu_runbook.md`: reproducible WavLM GPU execution checklist
 
 ## Method
 
@@ -47,6 +48,10 @@ fixed-length log-mel spectrograms, with the best checkpoint selected by dev EER.
 The waveform baseline is an AASIST-lite inspired model trained directly on
 fixed-length 16 kHz waveform crops, also from scratch and without external
 pretraining.
+The applied SSL baseline freezes `microsoft/wavlm-base-plus`, pools
+`last_hidden_state` with mean+std statistics, and trains a small MLP classifier
+on cached embeddings. This WavLM result is external-pretrained and is reported
+separately from protocol-comparable ASVspoof challenge systems.
 
 ## Results
 
@@ -61,6 +66,12 @@ training.
 | AASIST-lite waveform, no external pretraining | 2.59% | 10.64% | Valid raw-waveform graph-attention baseline; weak on hardest unseen attacks |
 | CQCC GMM-LLR | 11.15% | 11.59% | Protocol-correct, but uses a simplified Python CQCC extractor |
 | MFCC GMM-LLR | 9.77% | 16.41% | Fits dev better than CQCC, generalizes worse on unseen eval attacks |
+
+External-pretrained applied result:
+
+| Method | Track | Dev EER | Eval EER | Interpretation |
+|---|---|---:|---:|---|
+| frozen WavLM-base-plus mean+std MLP | external-pretrained/applied | 3.02% | 5.08% | Best numeric eval EER, but not protocol-comparable because WavLM uses external pretraining |
 
 Published ASVspoof 2019 LA reference systems:
 
@@ -80,11 +91,18 @@ result. Its errors are concentrated in A17, A18, and A19, which makes it useful
 for comparing waveform/graph-attention behavior against the spectrogram LCNN
 within the same reproducible evaluation harness.
 
+The frozen WavLM embedding classifier reaches 5.08% eval EER and is the best
+numeric project result, but it is an external-pretrained/applied result. It is
+useful as evidence that pretrained speech representations carry spoof-relevant
+information, while the LCNN remains the strongest protocol-comparable model
+trained from scratch in this repository.
+
 Generated reports:
 
 - `results.md`
 - `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json`
 - `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json`
+- `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
@@ -197,6 +215,13 @@ Run the full AASIST-lite waveform baseline on GPU:
 python scripts/train_neural.py --config configs/neural_aasist_lite.json
 ```
 
+Run the frozen WavLM applied SSL baseline on GPU:
+
+```bash
+python scripts/cache_ssl_embeddings.py --config configs/neural_ssl_wavlm_frozen.json
+python scripts/train_ssl_head.py --config configs/neural_ssl_wavlm_frozen.json
+```
+
 ## Common Commands
 
 Run EDA only:
@@ -297,10 +322,14 @@ SAP/
 │   ├── neural_aasist_lite.json
 │   ├── neural_aasist_lite_smoke.json
 │   ├── neural_lcnn.json
-│   └── neural_lcnn_smoke.json
+│   ├── neural_lcnn_smoke.json
+│   ├── neural_ssl_wavlm_frozen.json
+│   └── neural_ssl_wavlm_frozen_smoke.json
 ├── docs/
 │   ├── colab_handoff.md
 │   ├── model_card_template.md
+│   ├── phase3_gpu_runbook.md
+│   ├── phase3_ssl_plan.md
 │   └── run_artifact_contract.md
 ├── plan.md
 ├── results.md
@@ -310,15 +339,18 @@ SAP/
 │   ├── feature_cache.py  # versioned frame feature cache
 │   ├── features.py       # LFCC/MFCC/CQCC/WCQCC extractors
 │   ├── gmm_baseline.py   # dual-GMM training and LLR scoring
-│   ├── neural/           # PyTorch dataset, transforms, LCNN, evaluation
+│   ├── neural/           # PyTorch datasets, LCNN, AASIST-lite, SSL heads
 │   └── reporting.py      # JSON/CSV/plot reporting helpers
 ├── scripts/
-│   ├── run_project.py
-│   ├── eda.py
-│   ├── train_eval.py
 │   ├── attack_breakdown.py
+│   ├── cache_ssl_embeddings.py
+│   ├── check_phase3_ssl_ready.py
+│   ├── eda.py
+│   ├── run_project.py
+│   ├── summarize_results.py
+│   ├── train_eval.py
 │   ├── train_neural.py
-│   └── summarize_results.py
+│   └── train_ssl_head.py
 ├── tests/
 │   ├── test_evaluate.py
 │   ├── test_feature_cache.py

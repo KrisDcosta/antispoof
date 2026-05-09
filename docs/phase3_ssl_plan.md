@@ -1,9 +1,15 @@
-# Phase 3 SSL Embedding Plan
+# Phase 3 SSL Embedding Plan and Accepted Result
 
-Phase 3 adds an external-pretrained speech representation track while Phase 2
-AASIST-lite GPU training finishes. These runs are useful applied baselines, but
-they are not protocol-comparable ASVspoof challenge systems because the speech
-encoder is pretrained outside the official training protocol.
+Phase 3 adds an external-pretrained speech representation track. These runs are
+useful applied baselines, but they are not protocol-comparable ASVspoof
+challenge systems because the speech encoder is pretrained outside the official
+training protocol.
+
+Accepted full result:
+
+| Run ID | Track | Model | Dev EER | Eval EER | Evidence |
+|---|---|---|---:|---:|---|
+| `ssl_wavlm_pooled_full_seed42_50ep` | external-pretrained/applied | frozen WavLM-base-plus mean+std MLP | 3.02% | 5.08% | `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json` |
 
 ## Goal
 
@@ -16,9 +22,9 @@ generalization over the current project baselines:
 
 Primary metric remains eval EER, with dev EER used for model selection.
 
-## Initial Scope
+## Completed Scope
 
-Start with a frozen encoder and a shallow supervised head:
+The accepted baseline uses a frozen encoder and a shallow supervised head:
 
 - encoder: `microsoft/wavlm-base-plus` first, with `facebook/wav2vec2-base` as
   a fallback if dependency or memory issues appear
@@ -32,14 +38,13 @@ Start with a frozen encoder and a shallow supervised head:
 - loss: weighted cross entropy from train label counts
 - score: bonafide softmax probability
 
-Do not fine-tune the SSL encoder until the frozen-cache baseline has a complete
-dev/eval result and artifact folder. Do not cache full frame sequences for the
-first baseline; add a separate frame-cache mode later if attention pooling is
-needed.
+The SSL encoder is not fine-tuned. The implementation caches pooled mean+std
+vectors rather than full frame sequences, which keeps the GPU run cheap and the
+artifacts manageable.
 
-## Proposed Files
+## Implemented Files
 
-Implementation should stay close to the existing neural experiment interface:
+Implementation stays close to the existing neural experiment interface:
 
 - `configs/neural_ssl_wavlm_frozen_smoke.json`
 - `configs/neural_ssl_wavlm_frozen.json`
@@ -49,7 +54,7 @@ Implementation should stay close to the existing neural experiment interface:
 - `src/neural/ssl_dataset.py`
 - `src/neural/ssl_models.py`
 
-The training output should still follow `docs/run_artifact_contract.md`.
+The training output follows `docs/run_artifact_contract.md`.
 
 ## Cache Contract
 
@@ -79,7 +84,7 @@ Each cache should contain:
 The cache script should refuse to overwrite an existing cache unless an explicit
 flag is provided.
 
-## Run Order
+## Run Order Used
 
 1. Add the SSL dependency path in `requirements-neural.txt`.
 2. Validate the Phase 3 config and installed dependencies with
@@ -94,11 +99,10 @@ flag is provided.
 8. Validate full cache metadata and pooled vector shapes.
 9. Train the full frozen-head baseline on GPU.
 10. Update `results.md` with an explicit external-pretraining label.
-11. Only then consider top-layer fine-tuning, adapters, or LoRA.
 
-## Acceptance Criteria
+## Acceptance Status
 
-The first Phase 3 result is accepted when:
+The first Phase 3 result is accepted. The accepted run satisfies:
 
 - dev and eval EER are present
 - per-attack eval EER is present
@@ -107,9 +111,25 @@ The first Phase 3 result is accepted when:
 - cache representation is `pooled_mean_std`
 - normalization statistics are fit on train only
 - class imbalance is handled with weighted cross entropy
-- `external_pretraining` is `true` in `metrics.json`
-- model card says the result is external-pretrained/applied
-- no checkpoint or large cache artifact is committed
+- `external_pretraining` is `true` in the run summary
+- model card and project docs say the result is external-pretrained/applied
+- no checkpoint, raw score CSV, or large cache artifact is committed
+
+Archived Colab artifacts include:
+
+```text
+ssl_wavlm_pooled_full_seed42_50ep/
+  checkpoints/best.pt
+  scores/dev_scores.csv
+  scores/eval_scores.csv
+  per_attack_dev.csv
+  per_attack_eval.csv
+  plots/
+wavlm_base_plus/
+  train.pt
+  dev.pt
+  eval.pt
+```
 
 ## Risks
 
@@ -117,8 +137,6 @@ The first Phase 3 result is accepted when:
   caches pooled mean+std vectors only and keeps all caches ignored.
 - Encoder version drift can affect results. Pin the Hugging Face model name and
   record revision when available.
-- Full fine-tuning may overfit dev or exceed Colab memory. Treat it as a later
-  experiment, not the first Phase 3 deliverable.
 - The comparison should be worded carefully: Phase 3 is
   external-pretrained/applied and not protocol-comparable. Any comparison
   against ASVspoof challenge baselines must keep that caveat adjacent.

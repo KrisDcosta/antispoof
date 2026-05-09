@@ -1,0 +1,73 @@
+{
+  "run_id": "ssl_wavlm_pooled_full_seed42_50ep",
+  "commit": "5361e30",
+  "config_path": "configs/neural_ssl_wavlm_frozen.json",
+  "track": "external-pretrained/applied",
+  "external_pretraining": true,
+  "encoder_name": "microsoft/wavlm-base-plus",
+  "encoder_revision": null,
+  "cache_representation": "pooled_mean_std",
+  "hidden_state_source": "last_hidden_state",
+  "pooling": "mean_std",
+  "normalization": "train_mean_std",
+  "loss": "weighted_cross_entropy",
+  "classifier_head": "mean+std pooled MLP",
+  "model_family": "ssl_pooled_mlp",
+  "model_name": "ssl_wavlm_pooled_full",
+  "feature_or_input": "wavlm_pooled_mean_std",
+  "model_parameters": 393986,
+  "seed": 42,
+  "sample_rate": 16000,
+  "num_samples": 64600,
+  "training_seconds": 58.759225845336914,
+  "artifact_path": "results/neural/ssl_wavlm_pooled_full_seed42_50ep",
+  "cache_paths": {
+    "train": "results/cache/ssl/wavlm_base_plus/train.pt",
+    "dev": "results/cache/ssl/wavlm_base_plus/dev.pt",
+    "eval": "results/cache/ssl/wavlm_base_plus/eval.pt"
+  },
+  "splits": {
+    "dev": {
+      "eer": 0.0302,
+      "accuracy": 0.9698,
+      "threshold": 0.0,
+      "split_summary": {
+        "total": 24844,
+        "bonafide": 2548,
+        "spoof": 22296
+      }
+    },
+    "eval": {
+      "eer": 0.0508,
+      "accuracy": 0.9491,
+      "threshold": 0.217,
+      "split_summary": {
+        "total": 71237,
+        "bonafide": 7355,
+        "spoof": 63882
+      },
+      "per_attack_eer": {
+        "A07": 0.0037,
+        "A08": 0.0273,
+        "A09": 0.0015,
+        "A10": 0.0111,
+        "A11": 0.0069,
+        "A12": 0.0022,
+        "A13": 0.0006,
+        "A14": 0.0086,
+        "A15": 0.0063,
+        "A16": 0.006,
+        "A17": 0.0657,
+        "A18": 0.0802,
+        "A19": 0.1982
+      }
+    }
+  },
+  "notes": [
+    "Frozen WavLM-base-plus encoder with pooled mean+std embeddings and a small MLP head.",
+    "This is an external-pretrained/applied result and is not protocol-comparable to ASVspoof challenge systems.",
+    "Numerically improves over the project LCNN eval EER, but must be reported separately because the encoder uses external pretraining.",
+    "Eval errors are concentrated most strongly in A19, then A18 and A17.",
+    "Raw scores, checkpoint, and pooled cache files are archived outside git."
+  ]
+}
