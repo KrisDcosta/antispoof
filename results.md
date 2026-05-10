@@ -79,7 +79,7 @@ python scripts/train_eval.py \
 
 | Run ID | Track | Feature / Model | Dev EER | Eval EER | Status | Evidence |
 |---|---|---|---:|---:|---|---|
-| `lcnn_logmel_full_seed42_30ep` | Protocol-comparable | log-mel LCNN, no external pretraining | 0.75% | 5.67% | Current best project eval result | `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json` |
+| `lcnn_logmel_full_seed42_30ep` | Protocol-comparable | log-mel LCNN, no external pretraining | 0.75% | 5.67% | Best protocol-comparable project eval result | `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json` |
 | `ssl_wavlm_pooled_full_seed42_50ep` | External-pretrained/applied | frozen WavLM-base-plus mean+std MLP | 3.02% | 5.08% | Best numeric eval EER; not protocol-comparable because WavLM uses external pretraining | `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json` |
 | `gmm_lfcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | LFCC GMM-LLR | 0.06% | 10.25% | Strong classical baseline | `results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
 | `aasist_lite_waveform_seed42_100ep` | Protocol-comparable | raw-waveform AASIST-lite, no external pretraining | 2.59% | 10.64% | Valid waveform graph-attention baseline; weaker eval generalization than LCNN | `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json` |
@@ -98,7 +98,7 @@ Summary artifacts:
 
 ## Interpretation
 
-The log-mel LCNN is the current best project result:
+The log-mel LCNN is the best protocol-comparable project result:
 
 - project LCNN eval EER: 5.67%
 - published LFCC-GMM eval EER: 8.09%
@@ -292,6 +292,7 @@ Interpretation:
 
 | Date | Change |
 |---|---|
+| 2026-05-10 | Polished final project wording for completed public repository snapshot. |
 | 2026-05-09 | Added accepted frozen WavLM pooled SSL full dev/eval result. |
 | 2026-05-09 | Added Phase 3 pooled frozen SSL implementation plan and expected result contract. |
 | 2026-05-09 | Added AASIST-lite waveform full dev/eval result from Colab run. |

@@ -10,6 +10,10 @@ external-pretrained frozen WavLM embedding classifier as an applied comparison.
 The result is an end-to-end audio ML workflow with dataset validation, EDA,
 feature extraction, model training, scoring, EER evaluation, per-attack
 diagnostics, and comparison against published ASVspoof reference systems.
+The repository is organized as a finished experiment snapshot: reproducible
+commands, compact result evidence, and documentation are committed, while the
+large ASVspoof audio, raw score files, checkpoints, and embedding caches remain
+outside git.
 
 Project control documents:
 
@@ -61,7 +65,7 @@ training.
 
 | Method | Dev EER | Eval EER | Interpretation |
 |---|---:|---:|---|
-| log-mel LCNN, no external pretraining | 0.75% | 5.67% | Strongest project result; trained from scratch on ASVspoof LA |
+| log-mel LCNN, no external pretraining | 0.75% | 5.67% | Strongest protocol-comparable project result; trained from scratch on ASVspoof LA |
 | LFCC GMM-LLR | 0.06% | 10.25% | Strong classical baseline; close to the published LFCC-GMM eval reference |
 | AASIST-lite waveform, no external pretraining | 2.59% | 10.64% | Valid raw-waveform graph-attention baseline; weak on hardest unseen attacks |
 | CQCC GMM-LLR | 11.15% | 11.59% | Protocol-correct, but uses a simplified Python CQCC extractor |

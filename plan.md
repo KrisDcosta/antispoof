@@ -72,7 +72,7 @@ Implemented and validated:
 | LFCC GMM-LLR | LFCC + deltas | n/a | 0.06% | 10.25% | strongest classical baseline |
 | CQCC GMM-LLR | CQCC | n/a | 11.15% | 11.59% | protocol-correct CQCC comparison |
 | MFCC GMM-LLR | MFCC | n/a | 9.77% | 16.41% | MFCC ablation |
-| log-mel LCNN | log-mel spectrogram | 665,153 | 0.75% | 5.67% | strongest project result |
+| log-mel LCNN | log-mel spectrogram | 665,153 | 0.75% | 5.67% | strongest protocol-comparable result |
 | AASIST-lite waveform | raw waveform | 137,828 | 2.59% | 10.64% | waveform graph-attention baseline |
 | frozen WavLM pooled MLP | WavLM mean+std embeddings | 393,986 | 3.02% | 5.08% | strongest applied result; external-pretrained |
 
