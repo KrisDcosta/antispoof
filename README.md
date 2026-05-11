@@ -23,6 +23,7 @@ Project control documents:
 - `docs/colab_handoff.md`: Colab/VSCode GPU run instructions
 - `docs/phase3_ssl_plan.md`: external-pretrained SSL design and accepted result
 - `docs/phase3_gpu_runbook.md`: reproducible WavLM GPU execution checklist
+- `docs/phase4_fusion_plan.md`: score-fusion design and accepted result
 
 ## Method
 
@@ -56,6 +57,9 @@ The applied SSL baseline freezes `microsoft/wavlm-base-plus`, pools
 `last_hidden_state` with mean+std statistics, and trains a small MLP classifier
 on cached embeddings. This WavLM result is external-pretrained and is reported
 separately from protocol-comparable ASVspoof challenge systems.
+The score-fusion system combines dev-normalized LCNN and WavLM scores with a
+dev-selected weighted mean, testing whether the two model families make
+complementary errors.
 
 ## Results
 
@@ -75,7 +79,8 @@ External-pretrained applied result:
 
 | Method | Track | Dev EER | Eval EER | Interpretation |
 |---|---|---:|---:|---|
-| frozen WavLM-base-plus mean+std MLP | external-pretrained/applied | 3.02% | 5.08% | Best numeric eval EER, but not protocol-comparable because WavLM uses external pretraining |
+| frozen WavLM-base-plus mean+std MLP | external-pretrained/applied | 3.02% | 5.08% | Best individual applied model, but not protocol-comparable because WavLM uses external pretraining |
+| LCNN + WavLM score fusion | external-pretrained/applied | 0.55% | 3.62% | Best numeric project result; selected by dev EER with weighted mean fusion |
 
 Published ASVspoof 2019 LA reference systems:
 
@@ -95,11 +100,12 @@ result. Its errors are concentrated in A17, A18, and A19, which makes it useful
 for comparing waveform/graph-attention behavior against the spectrogram LCNN
 within the same reproducible evaluation harness.
 
-The frozen WavLM embedding classifier reaches 5.08% eval EER and is the best
-numeric project result, but it is an external-pretrained/applied result. It is
-useful as evidence that pretrained speech representations carry spoof-relevant
-information, while the LCNN remains the strongest protocol-comparable model
-trained from scratch in this repository.
+The frozen WavLM embedding classifier reaches 5.08% eval EER as the best
+individual applied model, and LCNN+WavLM score fusion improves the numeric eval
+EER to 3.62%. These results are external-pretrained/applied because they use
+WavLM-derived scores. They are useful as evidence that pretrained speech
+representations carry spoof-relevant information, while the LCNN remains the
+strongest protocol-comparable model trained from scratch in this repository.
 
 Generated reports:
 
@@ -107,6 +113,7 @@ Generated reports:
 - `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json`
 - `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json`
 - `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json`
+- `results/fusion/metrics/lcnn_wavlm_score_fusion_seed42_summary.json`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
@@ -226,6 +233,12 @@ python scripts/cache_ssl_embeddings.py --config configs/neural_ssl_wavlm_frozen.
 python scripts/train_ssl_head.py --config configs/neural_ssl_wavlm_frozen.json
 ```
 
+Run LCNN+WavLM score fusion after restoring both systems' score CSVs:
+
+```bash
+make phase4-fusion
+```
+
 ## Common Commands
 
 Run EDA only:
@@ -334,6 +347,7 @@ SAP/
 │   ├── model_card_template.md
 │   ├── phase3_gpu_runbook.md
 │   ├── phase3_ssl_plan.md
+│   ├── phase4_fusion_plan.md
 │   └── run_artifact_contract.md
 ├── plan.md
 ├── results.md
@@ -351,6 +365,7 @@ SAP/
 │   ├── check_phase3_ssl_ready.py
 │   ├── eda.py
 │   ├── run_project.py
+│   ├── run_score_fusion.py
 │   ├── summarize_results.py
 │   ├── train_eval.py
 │   ├── train_neural.py

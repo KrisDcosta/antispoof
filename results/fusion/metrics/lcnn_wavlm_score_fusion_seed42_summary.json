@@ -1,0 +1,136 @@
+{
+  "a17_a18_a19_eval_eer": {
+    "A17": 0.06145706145756255,
+    "A18": 0.04354904354908637,
+    "A19": 0.030999320190346697
+  },
+  "beats_wavlm_5_08_eval_eer": true,
+  "commit": "b5088af",
+  "created_at_utc": "2026-05-11T11:22:39.913653+00:00",
+  "methods": {
+    "logistic_regression": {
+      "dev_eer": 0.005494505494504575,
+      "eval_accuracy_at_dev_threshold": 0.83335906902312,
+      "eval_eer": 0.03806934058458533,
+      "rule": {
+        "class_weight": "balanced",
+        "coef": [
+          9.708947837634883,
+          3.461618563138692
+        ],
+        "intercept": [
+          -0.07987526937947148
+        ],
+        "sources": [
+          "lcnn",
+          "wavlm"
+        ],
+        "type": "logistic_regression"
+      }
+    },
+    "mean": {
+      "dev_eer": 0.005561535702329465,
+      "eval_accuracy_at_dev_threshold": 0.8327554501172144,
+      "eval_eer": 0.03792930715980101,
+      "rule": {
+        "sources": [
+          "lcnn",
+          "wavlm"
+        ],
+        "type": "mean"
+      }
+    },
+    "weighted_mean": {
+      "dev_eer": 0.005494505494421108,
+      "eval_accuracy_at_dev_threshold": 0.8334854078638909,
+      "eval_eer": 0.03616587355540447,
+      "rule": {
+        "alpha": 0.7,
+        "alpha_candidates": [
+          {
+            "alpha": 0.0,
+            "dev_eer": 0.030219780219780307,
+            "dev_threshold": -0.2994139519593144
+          },
+          {
+            "alpha": 0.1,
+            "dev_eer": 0.006671899529042317,
+            "dev_threshold": -0.287526126021688
+          },
+          {
+            "alpha": 0.2,
+            "dev_eer": 0.006099748833570595,
+            "dev_threshold": -0.28601053342013705
+          },
+          {
+            "alpha": 0.3,
+            "dev_eer": 0.005886970172684505,
+            "dev_threshold": -0.28539718850413853
+          },
+          {
+            "alpha": 0.4,
+            "dev_eer": 0.005494505494505562,
+            "dev_threshold": -0.2849252275378168
+          },
+          {
+            "alpha": 0.5,
+            "dev_eer": 0.005561535702329465,
+            "dev_threshold": -0.28881888591540283
+          },
+          {
+            "alpha": 0.6,
+            "dev_eer": 0.005561535702170769,
+            "dev_threshold": -0.28884994884404913
+          },
+          {
+            "alpha": 0.7,
+            "dev_eer": 0.005494505494421108,
+            "dev_threshold": -0.29005738579007
+          },
+          {
+            "alpha": 0.8,
+            "dev_eer": 0.005651237890966808,
+            "dev_threshold": -0.2942861586656483
+          },
+          {
+            "alpha": 0.9,
+            "dev_eer": 0.005886970172684466,
+            "dev_threshold": -0.3032574364229687
+          },
+          {
+            "alpha": 1.0,
+            "dev_eer": 0.007456828885491762,
+            "dev_threshold": -0.31784402849868143
+          }
+        ],
+        "left": "lcnn",
+        "right": "wavlm",
+        "type": "weighted_mean"
+      }
+    }
+  },
+  "result_strength": "strong",
+  "run_id": "lcnn_wavlm_score_fusion_seed42",
+  "selected_dev_eer": 0.005494505494421108,
+  "selected_eval_eer": 0.03616587355540447,
+  "selected_eval_per_attack_eer": {
+    "A07": 0.001767505098574151,
+    "A08": 0.03399048266489659,
+    "A09": 0.0028552005438473938,
+    "A10": 0.005030591434398322,
+    "A11": 0.0038665038674247647,
+    "A12": 0.003263086336163433,
+    "A13": 0.0035350101973624084,
+    "A14": 0.005030591434384148,
+    "A15": 0.00326308633612929,
+    "A16": 0.003670972127804241,
+    "A17": 0.06145706145756255,
+    "A18": 0.04354904354908637,
+    "A19": 0.030999320190346697
+  },
+  "selected_method": "weighted_mean",
+  "sources": [
+    "lcnn",
+    "wavlm"
+  ]
+}

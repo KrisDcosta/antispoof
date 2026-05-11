@@ -79,8 +79,9 @@ python scripts/train_eval.py \
 
 | Run ID | Track | Feature / Model | Dev EER | Eval EER | Status | Evidence |
 |---|---|---|---:|---:|---|---|
+| `lcnn_wavlm_score_fusion_seed42` | External-pretrained/applied | dev-normalized LCNN + WavLM weighted score fusion | 0.55% | 3.62% | Best numeric project result; selected by dev EER | `results/fusion/metrics/lcnn_wavlm_score_fusion_seed42_summary.json` |
 | `lcnn_logmel_full_seed42_30ep` | Protocol-comparable | log-mel LCNN, no external pretraining | 0.75% | 5.67% | Best protocol-comparable project eval result | `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json` |
-| `ssl_wavlm_pooled_full_seed42_50ep` | External-pretrained/applied | frozen WavLM-base-plus mean+std MLP | 3.02% | 5.08% | Best numeric eval EER; not protocol-comparable because WavLM uses external pretraining | `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json` |
+| `ssl_wavlm_pooled_full_seed42_50ep` | External-pretrained/applied | frozen WavLM-base-plus mean+std MLP | 3.02% | 5.08% | Best individual applied model; not protocol-comparable because WavLM uses external pretraining | `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json` |
 | `gmm_lfcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | LFCC GMM-LLR | 0.06% | 10.25% | Strong classical baseline | `results/baseline/metrics/gmm_lfcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
 | `aasist_lite_waveform_seed42_100ep` | Protocol-comparable | raw-waveform AASIST-lite, no external pretraining | 2.59% | 10.64% | Valid waveform graph-attention baseline; weaker eval generalization than LCNN | `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json` |
 | `gmm_cqcc_64c_diag_std_300000frames_seed42` | Protocol-comparable | CQCC GMM-LLR | 11.15% | 11.59% | Valid classical run; simplified CQCC extractor | `results/baseline/metrics/gmm_cqcc_64c_diag_std_300000frames_seed42_eval_metrics.json` |
@@ -91,6 +92,7 @@ Summary artifacts:
 - `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json`
 - `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json`
 - `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json`
+- `results/fusion/metrics/lcnn_wavlm_score_fusion_seed42_summary.json`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
@@ -109,7 +111,8 @@ The log-mel LCNN is the best protocol-comparable project result:
 The model is trained from scratch with no external pretraining, so it remains in
 the protocol-comparable track.
 
-The frozen WavLM pooled embedding classifier is the best numeric eval result:
+The frozen WavLM pooled embedding classifier is the best individual applied
+model:
 
 - project WavLM pooled MLP eval EER: 5.08%
 - project LCNN eval EER: 5.67%
@@ -119,6 +122,17 @@ This result must be reported separately from the protocol-comparable ASVspoof
 challenge-style systems because `microsoft/wavlm-base-plus` was pretrained on
 external speech data. It is useful as an applied audio ML comparison showing
 that frozen SSL speech representations contain spoof-relevant information.
+
+LCNN+WavLM score fusion is the best numeric project result:
+
+- project fusion eval EER: 3.62%
+- project WavLM pooled MLP eval EER: 5.08%
+- project LCNN eval EER: 5.67%
+- selected rule: `0.7 * z_lcnn + 0.3 * z_wavlm`
+
+This fusion result is external-pretrained/applied because it includes WavLM
+scores. It supports the research hypothesis that the scratch-trained
+spectrogram model and external-pretrained SSL model make complementary errors.
 
 The AASIST-lite waveform model is also trained from scratch and remains
 protocol-comparable, but it is not the strongest eval result:
@@ -282,16 +296,72 @@ Eval per-attack EER:
 
 Interpretation:
 
-- The WavLM pooled MLP is the best numeric eval EER in the project.
+- The WavLM pooled MLP is the best individual applied model before fusion.
 - It is not protocol-comparable to ASVspoof challenge systems because the
   frozen encoder uses external pretraining.
 - It sharply improves A17 and A18 compared with the scratch-trained LCNN, but
   A19 remains the largest eval weakness.
 
+### LCNN + WavLM Score Fusion
+
+Completed full dev/eval score-fusion run locally.
+
+Run command:
+
+```bash
+make phase4-fusion
+```
+
+The fusion runner aligns score CSVs by `file_id`, verifies labels and attack
+IDs, normalizes scores with dev-only statistics, evaluates mean / weighted mean
+/ logistic-regression fusion, selects by dev EER, then applies the frozen rule
+to eval.
+
+Full-run validation:
+
+| Run ID | Track | Sources | Selected Rule | Dev EER | Eval EER | Evidence |
+|---|---|---|---|---:|---:|---|
+| `lcnn_wavlm_score_fusion_seed42` | External-pretrained/applied | LCNN + WavLM | weighted mean, `alpha=0.7` toward LCNN | 0.55% | 3.62% | `results/fusion/metrics/lcnn_wavlm_score_fusion_seed42_summary.json` |
+
+Fusion methods:
+
+| Method | Dev EER | Eval EER |
+|---|---:|---:|
+| mean | 0.56% | 3.79% |
+| weighted mean | 0.55% | 3.62% |
+| logistic regression | 0.55% | 3.81% |
+
+Selected eval per-attack EER:
+
+| Attack | EER |
+|---|---:|
+| A07 | 0.18% |
+| A08 | 3.40% |
+| A09 | 0.29% |
+| A10 | 0.50% |
+| A11 | 0.39% |
+| A12 | 0.33% |
+| A13 | 0.35% |
+| A14 | 0.50% |
+| A15 | 0.33% |
+| A16 | 0.37% |
+| A17 | 6.15% |
+| A18 | 4.35% |
+| A19 | 3.10% |
+
+Interpretation:
+
+- Fusion beats both individual systems on eval EER.
+- Fusion keeps WavLM's A17 improvement while recovering LCNN-like strength on
+  A19.
+- The selected `alpha=0.7` means the scratch-trained LCNN receives more weight,
+  but WavLM contributes enough complementary information to reduce overall EER.
+
 ## Change Log
 
 | Date | Change |
 |---|---|
+| 2026-05-11 | Added accepted LCNN+WavLM score-fusion result. |
 | 2026-05-10 | Polished final project wording for completed public repository snapshot. |
 | 2026-05-09 | Added accepted frozen WavLM pooled SSL full dev/eval result. |
 | 2026-05-09 | Added Phase 3 pooled frozen SSL implementation plan and expected result contract. |

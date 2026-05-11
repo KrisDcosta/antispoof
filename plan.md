@@ -63,6 +63,7 @@ Implemented and validated:
 - raw-waveform crop/pad path
 - AASIST-lite inspired waveform model
 - frozen WavLM pooled SSL embedding baseline
+- LCNN+WavLM score-fusion complementarity baseline
 - Colab handoff workflow for GPU training and artifact archival
 
 ## Completed Results
@@ -75,6 +76,7 @@ Implemented and validated:
 | log-mel LCNN | log-mel spectrogram | 665,153 | 0.75% | 5.67% | strongest protocol-comparable result |
 | AASIST-lite waveform | raw waveform | 137,828 | 2.59% | 10.64% | waveform graph-attention baseline |
 | frozen WavLM pooled MLP | WavLM mean+std embeddings | 393,986 | 3.02% | 5.08% | strongest applied result; external-pretrained |
+| LCNN + WavLM score fusion | dev-normalized model scores | n/a | 0.55% | 3.62% | best numeric result; external-pretrained/applied |
 
 Best result:
 
@@ -86,9 +88,9 @@ Best result:
 
 Best applied result:
 
-- `ssl_wavlm_pooled_full_seed42_50ep`
-- 5.08% eval EER
-- frozen `microsoft/wavlm-base-plus` encoder
+- `lcnn_wavlm_score_fusion_seed42`
+- 3.62% eval EER
+- weighted score fusion of LCNN and frozen WavLM
 - external-pretrained/applied, not protocol-comparable
 
 See `results.md` for run commands, per-attack EER, and evidence paths.
@@ -116,7 +118,9 @@ flowchart LR
   F3 --> G
   F4 --> G
 
-  G --> H["Evaluation<br/>EER / per-attack EER / ROC"]
+  G --> F5["LCNN + WavLM score fusion"]
+  F5 --> H["Evaluation<br/>EER / per-attack EER / ROC"]
+  G --> H
   H --> I["results.md"]
   H --> J["README summary"]
 ```
@@ -187,4 +191,5 @@ Compact summaries are committed under `results/**/metrics/`.
 - [x] Full LCNN dev/eval run
 - [x] Full AASIST-lite dev/eval run
 - [x] Full frozen WavLM dev/eval run
+- [x] Full LCNN+WavLM score-fusion run
 - [x] README and results ledger updated with final metrics
