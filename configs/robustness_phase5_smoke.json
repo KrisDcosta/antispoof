@@ -1,0 +1,31 @@
+{
+  "run_id": "phase5_eval_corruptions_smoke",
+  "data_root": "data/LA",
+  "output_root": "results/robustness",
+  "split": "eval",
+  "sample_rate": 16000,
+  "num_samples": 64600,
+  "limit": 12,
+  "seed": 42,
+  "device": "auto",
+  "batch_size": 8,
+  "ssl_batch_size": 2,
+  "systems": {
+    "lcnn": {
+      "config_path": "results/neural/lcnn_logmel_full_seed42_30ep/config.json",
+      "checkpoint_path": "results/neural/lcnn_logmel_full_seed42_30ep/checkpoints/best.pt"
+    },
+    "wavlm": {
+      "config_path": "configs/neural_ssl_wavlm_frozen.json",
+      "checkpoint_path": "results/neural/ssl_wavlm_pooled_full_seed42_50ep/checkpoints/best.pt"
+    },
+    "fusion": {
+      "summary_path": "results/fusion/metrics/lcnn_wavlm_score_fusion_seed42_summary.json"
+    }
+  },
+  "corruptions": [
+    {"name": "clean", "type": "identity"},
+    {"name": "gain_m6db", "type": "gain", "db": -6},
+    {"name": "noise_10db", "type": "noise", "snr_db": 10}
+  ]
+}

@@ -1,4 +1,4 @@
-.PHONY: setup test smoke eda train summarize project neural-smoke neural-train aasist-smoke aasist-train ssl-ready ssl-cache-smoke ssl-smoke ssl-cache ssl-train phase4-fusion
+.PHONY: setup test smoke eda train summarize project neural-smoke neural-train aasist-smoke aasist-train ssl-ready ssl-cache-smoke ssl-smoke ssl-cache ssl-train phase4-fusion robustness-smoke robustness-eval
 
 PYTHON ?= ./venv/bin/python
 CONFIG ?= configs/asvspoof2019_gmm.json
@@ -48,6 +48,12 @@ ssl-train:
 
 phase4-fusion:
 	$(PYTHON) scripts/run_score_fusion.py
+
+robustness-smoke:
+	$(PYTHON) scripts/run_robustness_eval.py --config configs/robustness_phase5_smoke.json
+
+robustness-eval:
+	$(PYTHON) scripts/run_robustness_eval.py --config configs/robustness_phase5.json
 
 eda:
 	$(PYTHON) scripts/eda.py --data data/LA --output results/eda

@@ -1,0 +1,41 @@
+{
+  "run_id": "phase5_eval_corruptions",
+  "data_root": "data/LA",
+  "output_root": "results/robustness",
+  "split": "eval",
+  "sample_rate": 16000,
+  "num_samples": 64600,
+  "limit": null,
+  "seed": 42,
+  "device": "auto",
+  "batch_size": 32,
+  "ssl_batch_size": 4,
+  "systems": {
+    "lcnn": {
+      "config_path": "results/neural/lcnn_logmel_full_seed42_30ep/config.json",
+      "checkpoint_path": "results/neural/lcnn_logmel_full_seed42_30ep/checkpoints/best.pt"
+    },
+    "wavlm": {
+      "config_path": "configs/neural_ssl_wavlm_frozen.json",
+      "checkpoint_path": "results/neural/ssl_wavlm_pooled_full_seed42_50ep/checkpoints/best.pt"
+    },
+    "fusion": {
+      "summary_path": "results/fusion/metrics/lcnn_wavlm_score_fusion_seed42_summary.json"
+    }
+  },
+  "corruptions": [
+    {"name": "clean", "type": "identity"},
+    {"name": "gain_m12db", "type": "gain", "db": -12},
+    {"name": "gain_m6db", "type": "gain", "db": -6},
+    {"name": "gain_p6db", "type": "gain", "db": 6},
+    {"name": "clip_0p8", "type": "clipping", "threshold": 0.8},
+    {"name": "clip_0p6", "type": "clipping", "threshold": 0.6},
+    {"name": "clip_0p4", "type": "clipping", "threshold": 0.4},
+    {"name": "resample_12k", "type": "resample", "target_sample_rate": 12000},
+    {"name": "resample_8k", "type": "resample", "target_sample_rate": 8000},
+    {"name": "noise_20db", "type": "noise", "snr_db": 20},
+    {"name": "noise_10db", "type": "noise", "snr_db": 10},
+    {"name": "noise_5db", "type": "noise", "snr_db": 5},
+    {"name": "codec_optional", "type": "codec", "codec": "opus", "bitrate": "medium"}
+  ]
+}

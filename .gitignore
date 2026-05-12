@@ -15,7 +15,10 @@ results/smoke*/
 results/preliminary/
 results/neural/*/
 results/fusion/*/
+results/robustness/*/
 results/runs/*/
+corrupted_audio/
+results/**/corrupted_audio/
 !results/neural/.gitkeep
 !results/runs/.gitkeep
 results/*.log
@@ -36,6 +39,7 @@ results/**/*.tmp.npy
 !results/**/plots/**
 !results/**/metrics/
 !results/**/metrics/**
+results/robustness/metrics/*smoke*
 
 *.pkl
 *.pth
