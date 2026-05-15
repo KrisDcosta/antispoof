@@ -119,9 +119,8 @@ The compact committed evidence is:
 Large audio, checkpoints, raw scores, embedding caches, and full robustness run
 folders are intentionally excluded from git.
 
-## Current State
+## Completed Snapshot
 
-The project is complete as a benchmark and robustness study. The next stage,
-if pursued, should be framed as research extension rather than cleanup: for
-example, robustness-aware fusion, noise/channel augmentation, calibration under
-corruption, or deployment-oriented audio constraints.
+The project is complete as a benchmark and robustness study. It includes
+artifact-backed clean-eval results, robustness results, reproducibility
+instructions, and committed summary evidence for every reported headline claim.

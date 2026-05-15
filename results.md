@@ -414,9 +414,9 @@ Interpretation:
 - WavLM is consistently more robust than LCNN and fusion under additive noise.
 - Heavy clipping and resampling reduce the fusion advantage because the
   LCNN-weighted fusion rule inherits spectrogram-model sensitivity.
-- The publication story should therefore be nuanced: fusion improves clean
-  unseen-attack performance, while SSL representations are more stable under
-  several channel distortions.
+- The final interpretation separates clean benchmark performance from
+  corruption behavior: fusion improves clean unseen-attack performance, while
+  SSL representations are more stable under several channel distortions.
 
 ## Change Log
 

@@ -440,5 +440,4 @@ At the end of implementation, provide:
 3. smoke/full result summary
 4. whether Phase 5 is accepted or only infrastructure-ready
 5. any missing restored artifacts
-6. clear next recommendation
-
+6. final acceptance status
