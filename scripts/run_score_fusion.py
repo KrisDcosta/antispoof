@@ -1,4 +1,4 @@
-"""Run Phase 4 score-level fusion for ASVspoof 2019 LA systems.
+"""Run score-level fusion for ASVspoof 2019 LA systems.
 
 The script fits every score transformation on dev only, freezes the chosen
 fusion rule by dev EER, then applies the frozen rules to eval scores.
@@ -581,9 +581,9 @@ def main() -> None:
     run_id = args.run_id or "lcnn_wavlm_score_fusion_seed42"
     inverted = set(args.invert_source)
     if bool(args.lcnn_dev) != bool(args.lcnn_eval):
-        raise SystemExit("Phase 4 fusion aborted: provide both --lcnn-dev and --lcnn-eval, or neither")
+        raise SystemExit("Score fusion aborted: provide both --lcnn-dev and --lcnn-eval, or neither")
     if bool(args.wavlm_dev) != bool(args.wavlm_eval):
-        raise SystemExit("Phase 4 fusion aborted: provide both --wavlm-dev and --wavlm-eval, or neither")
+        raise SystemExit("Score fusion aborted: provide both --wavlm-dev and --wavlm-eval, or neither")
     lcnn = (
         source_from_paths("lcnn", args.lcnn_dev, args.lcnn_eval, inverted)
         if args.lcnn_dev and args.lcnn_eval
@@ -604,7 +604,7 @@ def main() -> None:
     try:
         metrics = run_fusion(run_id, Path(args.output_root), sources, parse_alpha_grid(args.alpha_grid))
     except (FileNotFoundError, ValueError) as exc:
-        raise SystemExit(f"Phase 4 fusion aborted: {exc}") from exc
+        raise SystemExit(f"Score fusion aborted: {exc}") from exc
     selected = metrics["selected_method"]
     print(f"Selected fusion: {selected}")
     print(f"Dev EER : {metrics['selected_dev_eer'] * 100:.2f}%")

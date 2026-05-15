@@ -143,7 +143,7 @@ rate-limit stability but is not required for the committed result.
 
 ## Score Fusion
 
-Phase 4 fusion requires the LCNN and WavLM raw score CSVs:
+Score fusion requires the LCNN and WavLM raw score CSVs:
 
 ```text
 results/neural/lcnn_logmel_full_seed42_30ep/scores/dev_scores.csv
@@ -155,7 +155,7 @@ results/neural/ssl_wavlm_pooled_full_seed42_50ep/scores/eval_scores.csv
 After restoring those artifacts:
 
 ```bash
-make phase4-fusion
+make score-fusion
 ```
 
 The runner aligns by `file_id`, verifies labels and attack IDs, fits
@@ -170,8 +170,9 @@ fused_score = 0.7 * z_lcnn + 0.3 * z_wavlm
 
 ## Robustness Evaluation
 
-Phase 5 requires eval audio plus the accepted LCNN, WavLM, and fusion artifacts.
-It does not require train/dev audio unless you are rebuilding earlier phases.
+Robustness evaluation requires eval audio plus the accepted LCNN, WavLM, and
+fusion artifacts. It does not require train/dev audio unless you are rebuilding
+the earlier model runs.
 
 Run a smoke check first:
 

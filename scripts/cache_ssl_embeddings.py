@@ -28,7 +28,7 @@ from src.neural.train_utils import load_config, select_device, set_seed
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", required=True, help="Phase 3 SSL experiment JSON config")
+    parser.add_argument("--config", required=True, help="SSL experiment JSON config")
     parser.add_argument("--overwrite", action="store_true", help="Replace existing split cache files")
     return parser.parse_args()
 
@@ -117,9 +117,9 @@ def main() -> None:
     set_seed(int(config["training"]["seed"]))
 
     if config["ssl"].get("cache_representation") != "pooled_mean_std":
-        raise ValueError("Phase 3 initial implementation only supports pooled_mean_std caches")
+        raise ValueError("SSL cache generation currently supports pooled_mean_std caches")
     if config["ssl"].get("hidden_state_source", "last_hidden_state") != "last_hidden_state":
-        raise ValueError("Phase 3 initial implementation only supports last_hidden_state")
+        raise ValueError("SSL cache generation currently supports last_hidden_state")
 
     device = select_device(config["training"]["device"])
     processor, model = load_frozen_ssl_encoder(config["ssl"]["encoder_name"], device)

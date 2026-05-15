@@ -16,7 +16,7 @@ from scripts.run_robustness_eval import (
 )
 
 
-class RobustnessPhase5Tests(unittest.TestCase):
+class RobustnessEvalTests(unittest.TestCase):
     def test_gain_corruption_changes_amplitude(self):
         waveform = torch.tensor([0.5, -0.25], dtype=torch.float32)
         out = apply_corruption(waveform, Corruption("gain_p6db", "gain", {"db": 6}))

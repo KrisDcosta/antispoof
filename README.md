@@ -18,18 +18,11 @@ outside git.
 For a short project report, start with `docs/project_summary.md`. For rerunning
 or auditing the results, start with `docs/reproducibility.md`.
 
-Project control documents:
+Documentation:
 
-- `plan.md`: completed scope, architecture, and implementation rules
 - `results.md`: authoritative results ledger for reported numbers
 - `docs/project_summary.md`: concise final project report and architecture map
 - `docs/reproducibility.md`: setup, artifact, and rerun guide
-- `docs/run_artifact_contract.md`: expected structure for experiment outputs
-- `docs/colab_handoff.md`: Colab/VSCode GPU run instructions
-- `docs/phase3_ssl_plan.md`: external-pretrained SSL design and accepted result
-- `docs/phase3_gpu_runbook.md`: reproducible WavLM GPU execution checklist
-- `docs/phase4_fusion_plan.md`: score-fusion design and accepted result
-- `docs/phase5_robustness_plan.md`: robustness evaluation design and result
 
 ## Method
 
@@ -251,11 +244,10 @@ python scripts/train_ssl_head.py --config configs/neural_ssl_wavlm_frozen.json
 Run LCNN+WavLM score fusion after restoring both systems' score CSVs:
 
 ```bash
-make phase4-fusion
+make score-fusion
 ```
 
-Run the Phase 5 robustness sweep after restoring eval audio and model
-artifacts:
+Run the robustness sweep after restoring eval audio and model artifacts:
 
 ```bash
 make robustness-smoke
@@ -365,20 +357,11 @@ SAP/
 │   ├── neural_lcnn_smoke.json
 │   ├── neural_ssl_wavlm_frozen.json
 │   ├── neural_ssl_wavlm_frozen_smoke.json
-│   ├── robustness_phase5.json
-│   └── robustness_phase5_smoke.json
+│   ├── robustness_eval.json
+│   └── robustness_eval_smoke.json
 ├── docs/
-│   ├── colab_handoff.md
-│   ├── model_card_template.md
-│   ├── phase3_gpu_runbook.md
-│   ├── phase3_ssl_plan.md
-│   ├── phase4_fusion_plan.md
-│   ├── phase5_robustness_implementation_plan.md
-│   ├── phase5_robustness_plan.md
 │   ├── project_summary.md
-│   ├── reproducibility.md
-│   └── run_artifact_contract.md
-├── plan.md
+│   └── reproducibility.md
 ├── results.md
 ├── src/
 │   ├── dataset.py        # official ASVspoof protocol loader
@@ -391,7 +374,7 @@ SAP/
 ├── scripts/
 │   ├── attack_breakdown.py
 │   ├── cache_ssl_embeddings.py
-│   ├── check_phase3_ssl_ready.py
+│   ├── check_ssl_ready.py
 │   ├── eda.py
 │   ├── run_project.py
 │   ├── run_robustness_eval.py
@@ -405,9 +388,9 @@ SAP/
 │   ├── test_feature_cache.py
 │   ├── test_features.py
 │   ├── test_neural.py
-│   ├── test_robustness_phase5.py
+│   ├── test_robustness_eval.py
 │   ├── test_score_fusion.py
-│   └── test_ssl_phase3.py
+│   └── test_ssl_baseline.py
 ├── references/
 │   └── standard_baselines.json
 ├── results/

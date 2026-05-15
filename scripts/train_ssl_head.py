@@ -47,7 +47,7 @@ from src.reporting import (
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", required=True, help="Phase 3 SSL experiment JSON config")
+    parser.add_argument("--config", required=True, help="SSL experiment JSON config")
     return parser.parse_args()
 
 
@@ -75,7 +75,7 @@ def build_model(config: dict) -> SSLPooledMLP:
 def build_optimizer(config: dict, model: torch.nn.Module) -> torch.optim.Optimizer:
     training = config["training"]
     if str(training.get("optimizer", "adamw")).lower() != "adamw":
-        raise ValueError("Phase 3 SSL head currently supports adamw")
+        raise ValueError("SSL head training currently supports adamw")
     return torch.optim.AdamW(
         model.parameters(),
         lr=float(training["learning_rate"]),

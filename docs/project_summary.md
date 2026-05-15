@@ -84,9 +84,9 @@ external-pretrained/applied because WavLM uses external speech pretraining.
 
 ## Robustness Findings
 
-Phase 5 evaluates frozen accepted systems under deterministic corruption. No
-models are retrained, no normalization is refit on corrupted eval, and the
-fusion rule remains frozen as:
+The robustness sweep evaluates frozen accepted systems under deterministic
+corruption. No models are retrained, no normalization is refit on corrupted
+eval, and the fusion rule remains frozen as:
 
 ```text
 fused_score = 0.7 * z_lcnn + 0.3 * z_wavlm

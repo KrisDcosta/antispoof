@@ -4,13 +4,13 @@ from pathlib import Path
 
 import torch
 
-from scripts.check_phase3_ssl_ready import validate_cache_payload, validate_config
+from scripts.check_ssl_ready import validate_cache_payload, validate_config
 from src.neural.ssl_dataset import SSLEmbeddingDataset, TrainMeanStdNormalizer, class_weights_from_labels
 from src.neural.ssl_embeddings import ensure_cache_writable, pooled_mean_std, save_cache
 from src.neural.ssl_models import SSLPooledMLP
 
 
-class SSLPhase3Tests(unittest.TestCase):
+class SSLBaselineTests(unittest.TestCase):
     def test_pooled_mean_std_returns_double_hidden_dim(self):
         hidden = torch.tensor([
             [[1.0, 2.0, 3.0], [3.0, 4.0, 5.0]],
@@ -74,7 +74,7 @@ class SSLPhase3Tests(unittest.TestCase):
 
             self.assertEqual(ensure_cache_writable(path, overwrite=True), path)
 
-    def test_phase3_config_validator_accepts_expected_defaults(self):
+    def test_ssl_config_validator_accepts_expected_defaults(self):
         config = {
             "track": "external-pretrained/applied",
             "model": {"type": "ssl_pooled_mlp", "input": "wavlm_pooled_mean_std", "input_dim": 1536},

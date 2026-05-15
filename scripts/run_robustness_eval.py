@@ -1,4 +1,4 @@
-"""Run Phase 5 robustness evaluation for frozen ASVspoof 2019 LA systems."""
+"""Run robustness evaluation for frozen ASVspoof 2019 LA systems."""
 
 from __future__ import annotations
 
@@ -56,7 +56,7 @@ class FusionStats:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", required=True, help="Phase 5 robustness JSON config")
+    parser.add_argument("--config", required=True, help="Robustness evaluation JSON config")
     return parser.parse_args()
 
 
@@ -85,9 +85,9 @@ def validate_config(config: dict[str, Any]) -> None:
     missing = [str(path) for path in required if not path.exists()]
     if missing:
         detail = "\n".join(f"  - {path}" for path in missing)
-        raise FileNotFoundError(f"Phase 5 robustness missing required artifacts:\n{detail}")
+        raise FileNotFoundError(f"Robustness evaluation missing required artifacts:\n{detail}")
     if config.get("split", "eval") != "eval":
-        raise ValueError("Phase 5 robustness is eval-only for this implementation")
+        raise ValueError("Robustness evaluation is eval-only for this implementation")
     if not config.get("corruptions"):
         raise ValueError("config must define at least one corruption")
 
@@ -297,7 +297,7 @@ def load_fusion_stats(summary_path: str | os.PathLike) -> FusionStats:
             stats = read_json(full_metrics).get("score_normalization")
     if not stats:
         raise ValueError(
-            f"Phase 4 fusion normalization stats not found in {path}; "
+            f"Score-fusion normalization stats not found in {path}; "
             "restore results/fusion/<run_id>/metrics.json or provide a summary containing score_normalization"
         )
     rule = payload.get("methods", {}).get("weighted_mean", {}).get("rule", {})
@@ -417,7 +417,7 @@ def save_eer_by_condition(path: Path, rows: list[dict[str, object]]) -> None:
     ax.set_xticks(x)
     ax.set_xticklabels(conditions, rotation=25, ha="right")
     ax.set_ylabel("EER (%)")
-    ax.set_title("Phase 5 robustness EER by condition")
+    ax.set_title("Robustness EER by condition")
     ax.grid(True, axis="y", alpha=0.3)
     ax.legend()
     fig.tight_layout()
@@ -489,8 +489,8 @@ def compact_summary(
         "commit": current_commit(),
         "split": config.get("split", "eval"),
         "limit": config.get("limit"),
-        "phase": "phase5_robustness_eval",
-        "accepted_phase4_fusion_rule": "fused_score = 0.7 * z_lcnn + 0.3 * z_wavlm",
+        "run_type": "robustness_eval",
+        "accepted_fusion_rule": "fused_score = 0.7 * z_lcnn + 0.3 * z_wavlm",
         "elapsed_seconds": elapsed,
         "artifact_dir": str(run_dir),
         "primary": primary,
@@ -629,7 +629,7 @@ def main() -> None:
     try:
         run(parse_args().config)
     except (FileNotFoundError, ValueError, NotImplementedError) as exc:
-        raise SystemExit(f"Phase 5 robustness aborted: {exc}") from exc
+        raise SystemExit(f"Robustness evaluation aborted: {exc}") from exc
 
 
 if __name__ == "__main__":

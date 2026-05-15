@@ -1,11 +1,11 @@
 {
-  "accepted_phase4_fusion_rule": "fused_score = 0.7 * z_lcnn + 0.3 * z_wavlm",
+  "accepted_fusion_rule": "fused_score = 0.7 * z_lcnn + 0.3 * z_wavlm",
   "artifact_dir": "results/robustness/phase5_eval_corruptions",
   "commit": "5cf9c28",
   "created_at_utc": "2026-05-14T23:43:23.759536+00:00",
   "elapsed_seconds": 13824.564392328262,
   "limit": null,
-  "phase": "phase5_robustness_eval",
+  "run_type": "robustness_eval",
   "primary": {
     "fusion::clean": {
       "delta_vs_clean": null,

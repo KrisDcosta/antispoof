@@ -1,4 +1,4 @@
-"""Check Phase 3 SSL configuration and local readiness without running WavLM."""
+"""Check SSL configuration and local readiness without running WavLM."""
 
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ REQUIRED_CACHE_KEYS = [
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", required=True, help="Phase 3 SSL experiment JSON config")
+    parser.add_argument("--config", required=True, help="SSL experiment JSON config")
     parser.add_argument(
         "--check-caches",
         action="store_true",
@@ -56,7 +56,7 @@ def validate_config(config: dict) -> list[str]:
     if int(config["model"].get("input_dim", 0)) != 1536:
         errors.append("model.input_dim must be 1536 for WavLM-base-plus mean+std pooling")
     if config["ssl"].get("encoder_name") != "microsoft/wavlm-base-plus":
-        errors.append("ssl.encoder_name must be microsoft/wavlm-base-plus for the first Phase 3 run")
+        errors.append("ssl.encoder_name must be microsoft/wavlm-base-plus for this SSL baseline")
     if config["ssl"].get("cache_representation") != "pooled_mean_std":
         errors.append("ssl.cache_representation must be pooled_mean_std")
     if config["ssl"].get("hidden_state_source") != "last_hidden_state":
@@ -152,7 +152,7 @@ def main() -> None:
     all_errors = errors + package_errors + cache_errors
     if all_errors:
         raise SystemExit(1)
-    print("Phase 3 SSL readiness: OK")
+    print("SSL readiness: OK")
 
 
 if __name__ == "__main__":

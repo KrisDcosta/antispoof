@@ -316,7 +316,7 @@ Completed full dev/eval score-fusion run locally.
 Run command:
 
 ```bash
-make phase4-fusion
+make score-fusion
 ```
 
 The fusion runner aligns score CSVs by `file_id`, verifies labels and attack
@@ -364,18 +364,18 @@ Interpretation:
 - The selected `alpha=0.7` means the scratch-trained LCNN receives more weight,
   but WavLM contributes enough complementary information to reduce overall EER.
 
-### Phase 5 Robustness Evaluation
+### Robustness Evaluation
 
 Completed full eval robustness sweep in Colab.
 
 Run command:
 
 ```bash
-python scripts/run_robustness_eval.py --config configs/robustness_phase5.json
+python scripts/run_robustness_eval.py --config configs/robustness_eval.json
 ```
 
-The robustness runner evaluates the frozen LCNN, frozen WavLM, and frozen Phase
-4 fusion rule on deterministic corruptions. It does not retrain models, refit
+The robustness runner evaluates the frozen LCNN, frozen WavLM, and frozen
+score-fusion rule on deterministic corruptions. It does not retrain models, refit
 normalization, or retune fusion weights.
 
 Runtime:
@@ -417,16 +417,3 @@ Interpretation:
 - The final interpretation separates clean benchmark performance from
   corruption behavior: fusion improves clean unseen-attack performance, while
   SSL representations are more stable under several channel distortions.
-
-## Change Log
-
-| Date | Change |
-|---|---|
-| 2026-05-14 | Added accepted Phase 5 robustness evaluation result. |
-| 2026-05-11 | Added accepted LCNN+WavLM score-fusion result. |
-| 2026-05-10 | Polished final project wording for completed public repository snapshot. |
-| 2026-05-09 | Added accepted frozen WavLM pooled SSL full dev/eval result. |
-| 2026-05-09 | Added Phase 3 pooled frozen SSL implementation plan and expected result contract. |
-| 2026-05-09 | Added AASIST-lite waveform full dev/eval result from Colab run. |
-| 2026-05-08 | Added log-mel LCNN full dev/eval result from Colab A100 run. |
-| 2026-05-07 | Created root results ledger and locked current classical GMM results. |

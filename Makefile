@@ -1,4 +1,4 @@
-.PHONY: setup test smoke eda train summarize project neural-smoke neural-train aasist-smoke aasist-train ssl-ready ssl-cache-smoke ssl-smoke ssl-cache ssl-train phase4-fusion robustness-smoke robustness-eval
+.PHONY: setup test smoke eda train summarize project neural-smoke neural-train aasist-smoke aasist-train ssl-ready ssl-cache-smoke ssl-smoke ssl-cache ssl-train score-fusion robustness-smoke robustness-eval
 
 PYTHON ?= ./venv/bin/python
 CONFIG ?= configs/asvspoof2019_gmm.json
@@ -32,7 +32,7 @@ aasist-train:
 	$(PYTHON) scripts/train_neural.py --config $(AASIST_CONFIG)
 
 ssl-ready:
-	$(PYTHON) scripts/check_phase3_ssl_ready.py --config $(SSL_CONFIG)
+	$(PYTHON) scripts/check_ssl_ready.py --config $(SSL_CONFIG)
 
 ssl-cache-smoke:
 	$(PYTHON) scripts/cache_ssl_embeddings.py --config $(SSL_SMOKE_CONFIG)
@@ -46,14 +46,14 @@ ssl-cache:
 ssl-train:
 	$(PYTHON) scripts/train_ssl_head.py --config $(SSL_CONFIG)
 
-phase4-fusion:
+score-fusion:
 	$(PYTHON) scripts/run_score_fusion.py
 
 robustness-smoke:
-	$(PYTHON) scripts/run_robustness_eval.py --config configs/robustness_phase5_smoke.json
+	$(PYTHON) scripts/run_robustness_eval.py --config configs/robustness_eval_smoke.json
 
 robustness-eval:
-	$(PYTHON) scripts/run_robustness_eval.py --config configs/robustness_phase5.json
+	$(PYTHON) scripts/run_robustness_eval.py --config configs/robustness_eval.json
 
 eda:
 	$(PYTHON) scripts/eda.py --data data/LA --output results/eda
