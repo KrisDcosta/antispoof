@@ -1,0 +1,199 @@
+{
+  "accepted_phase4_fusion_rule": "fused_score = 0.7 * z_lcnn + 0.3 * z_wavlm",
+  "artifact_dir": "results/robustness/phase5_eval_corruptions",
+  "commit": "5cf9c28",
+  "created_at_utc": "2026-05-14T23:43:23.759536+00:00",
+  "elapsed_seconds": 13824.564392328262,
+  "limit": null,
+  "phase": "phase5_robustness_eval",
+  "primary": {
+    "fusion::clean": {
+      "delta_vs_clean": null,
+      "eer": 0.03616587355540447,
+      "ratio_vs_clean": null
+    },
+    "fusion::clip_0p4": {
+      "delta_vs_clean": 0.02511899542155404,
+      "eer": 0.061284868976958506,
+      "ratio_vs_clean": 1.694549666637331
+    },
+    "fusion::clip_0p6": {
+      "delta_vs_clean": 0.015771583956492218,
+      "eer": 0.051937457511896684,
+      "ratio_vs_clean": 1.436090225563911
+    },
+    "fusion::clip_0p8": {
+      "delta_vs_clean": 0.0017675050985722501,
+      "eer": 0.03793337865397672,
+      "ratio_vs_clean": 1.0488721804511236
+    },
+    "fusion::gain_m12db": {
+      "delta_vs_clean": -0.0010876954452753163,
+      "eer": 0.03507817811012915,
+      "ratio_vs_clean": 0.9699248120300753
+    },
+    "fusion::gain_m6db": {
+      "delta_vs_clean": -0.0009517335146158323,
+      "eer": 0.035214140040788634,
+      "ratio_vs_clean": 0.9736842105263178
+    },
+    "fusion::gain_p6db": {
+      "delta_vs_clean": 0.0009517335146155825,
+      "eer": 0.03711760707002005,
+      "ratio_vs_clean": 1.0263157894736752
+    },
+    "fusion::noise_10db": {
+      "delta_vs_clean": 0.3291638341264434,
+      "eer": 0.36532970768184786,
+      "ratio_vs_clean": 10.101503759398469
+    },
+    "fusion::noise_20db": {
+      "delta_vs_clean": 0.11858820427636238,
+      "eer": 0.15475407783176684,
+      "ratio_vs_clean": 4.279008430273104
+    },
+    "fusion::noise_5db": {
+      "delta_vs_clean": 0.3617946974847035,
+      "eer": 0.39796057104010796,
+      "ratio_vs_clean": 11.003759398496225
+    },
+    "fusion::resample_12k": {
+      "delta_vs_clean": 0.025016995241320818,
+      "eer": 0.061182868796725284,
+      "ratio_vs_clean": 1.69172932330795
+    },
+    "fusion::resample_8k": {
+      "delta_vs_clean": 0.021769068993475568,
+      "eer": 0.057934942548880035,
+      "ratio_vs_clean": 1.6019229415301237
+    },
+    "lcnn::clean": {
+      "delta_vs_clean": null,
+      "eer": 0.056698287466582155,
+      "ratio_vs_clean": null
+    },
+    "lcnn::clip_0p4": {
+      "delta_vs_clean": 0.02360602360581849,
+      "eer": 0.08030431107240064,
+      "ratio_vs_clean": 1.4163445610192693
+    },
+    "lcnn::clip_0p6": {
+      "delta_vs_clean": 0.006105006104941017,
+      "eer": 0.06280329357152317,
+      "ratio_vs_clean": 1.107675317504771
+    },
+    "lcnn::clip_0p8": {
+      "delta_vs_clean": 0.00135745692514741,
+      "eer": 0.058055744391729565,
+      "ratio_vs_clean": 1.0239417623671172
+    },
+    "lcnn::gain_m12db": {
+      "delta_vs_clean": 0.0,
+      "eer": 0.056698287466582155,
+      "ratio_vs_clean": 1.0
+    },
+    "lcnn::gain_m6db": {
+      "delta_vs_clean": 8.468503676084538e-13,
+      "eer": 0.056698287467429005,
+      "ratio_vs_clean": 1.000000000014936
+    },
+    "lcnn::gain_p6db": {
+      "delta_vs_clean": 8.468503676084538e-13,
+      "eer": 0.056698287467429005,
+      "ratio_vs_clean": 1.000000000014936
+    },
+    "lcnn::noise_10db": {
+      "delta_vs_clean": 0.28818759588015147,
+      "eer": 0.34488588334673365,
+      "ratio_vs_clean": 6.082827167399167
+    },
+    "lcnn::noise_20db": {
+      "delta_vs_clean": 0.10808757249262932,
+      "eer": 0.16478585995921147,
+      "ratio_vs_clean": 2.9063639718630987
+    },
+    "lcnn::noise_5db": {
+      "delta_vs_clean": 0.35553828629276535,
+      "eer": 0.4122365737593475,
+      "ratio_vs_clean": 7.270705909809337
+    },
+    "lcnn::resample_12k": {
+      "delta_vs_clean": 0.01790801790746991,
+      "eer": 0.07460630537405206,
+      "ratio_vs_clean": 1.3158475980076973
+    },
+    "lcnn::resample_8k": {
+      "delta_vs_clean": 0.01895682665040748,
+      "eer": 0.07565511411698964,
+      "ratio_vs_clean": 1.3343456654062187
+    },
+    "wavlm::clean": {
+      "delta_vs_clean": null,
+      "eer": 0.050849762066646924,
+      "ratio_vs_clean": null
+    },
+    "wavlm::clip_0p4": {
+      "delta_vs_clean": 0.00652617267163428,
+      "eer": 0.057375934738281203,
+      "ratio_vs_clean": 1.128342245988893
+    },
+    "wavlm::clip_0p6": {
+      "delta_vs_clean": 0.0015593672663072183,
+      "eer": 0.05240912933295414,
+      "ratio_vs_clean": 1.030666166426962
+    },
+    "wavlm::clip_0p8": {
+      "delta_vs_clean": 8.790425556360476e-05,
+      "eer": 0.05093766632221053,
+      "ratio_vs_clean": 1.0017287053467112
+    },
+    "wavlm::gain_m12db": {
+      "delta_vs_clean": 0.002044636980945834,
+      "eer": 0.05289439904759276,
+      "ratio_vs_clean": 1.0402093716439813
+    },
+    "wavlm::gain_m6db": {
+      "delta_vs_clean": 0.00018182742763857979,
+      "eer": 0.051031589494285504,
+      "ratio_vs_clean": 1.0035757773536926
+    },
+    "wavlm::gain_p6db": {
+      "delta_vs_clean": 0.001087695445224801,
+      "eer": 0.051937457511871725,
+      "ratio_vs_clean": 1.0213903743305466
+    },
+    "wavlm::noise_10db": {
+      "delta_vs_clean": 0.1653297076813309,
+      "eer": 0.21617946974797783,
+      "ratio_vs_clean": 4.251336898383896
+    },
+    "wavlm::noise_20db": {
+      "delta_vs_clean": 0.06363018354858085,
+      "eer": 0.11447994561522777,
+      "ratio_vs_clean": 2.25133689839459
+    },
+    "wavlm::noise_5db": {
+      "delta_vs_clean": 0.3346265849471865,
+      "eer": 0.38547634701383343,
+      "ratio_vs_clean": 7.58069126279497
+    },
+    "wavlm::resample_12k": {
+      "delta_vs_clean": 0.0004009814908068135,
+      "eer": 0.05125074355745374,
+      "ratio_vs_clean": 1.007885611938189
+    },
+    "wavlm::resample_8k": {
+      "delta_vs_clean": -0.003670972127829887,
+      "eer": 0.04717878993881704,
+      "ratio_vs_clean": 0.9278074866305475
+    }
+  },
+  "run_id": "phase5_eval_corruptions",
+  "skipped_corruptions": [
+    {
+      "condition": "codec_optional",
+      "reason": "codec corruption is optional and not enabled"
+    }
+  ],
+  "split": "eval"
+}

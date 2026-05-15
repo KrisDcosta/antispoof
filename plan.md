@@ -64,6 +64,7 @@ Implemented and validated:
 - AASIST-lite inspired waveform model
 - frozen WavLM pooled SSL embedding baseline
 - LCNN+WavLM score-fusion complementarity baseline
+- deterministic robustness evaluation under gain, clipping, resampling, and noise
 - Colab handoff workflow for GPU training and artifact archival
 
 ## Completed Results
@@ -77,6 +78,13 @@ Implemented and validated:
 | AASIST-lite waveform | raw waveform | 137,828 | 2.59% | 10.64% | waveform graph-attention baseline |
 | frozen WavLM pooled MLP | WavLM mean+std embeddings | 393,986 | 3.02% | 5.08% | strongest applied result; external-pretrained |
 | LCNN + WavLM score fusion | dev-normalized model scores | n/a | 0.55% | 3.62% | best numeric result; external-pretrained/applied |
+
+Robustness result:
+
+- `phase5_eval_corruptions`
+- fusion holds under gain shifts and mild clipping/resampling
+- WavLM is most robust under additive noise
+- codec condition was recorded as skipped because codec corruption was optional
 
 Best result:
 
@@ -192,4 +200,5 @@ Compact summaries are committed under `results/**/metrics/`.
 - [x] Full AASIST-lite dev/eval run
 - [x] Full frozen WavLM dev/eval run
 - [x] Full LCNN+WavLM score-fusion run
+- [x] Full Phase 5 robustness eval run
 - [x] README and results ledger updated with final metrics

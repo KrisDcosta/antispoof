@@ -24,6 +24,7 @@ Project control documents:
 - `docs/phase3_ssl_plan.md`: external-pretrained SSL design and accepted result
 - `docs/phase3_gpu_runbook.md`: reproducible WavLM GPU execution checklist
 - `docs/phase4_fusion_plan.md`: score-fusion design and accepted result
+- `docs/phase5_robustness_plan.md`: robustness evaluation design and result
 
 ## Method
 
@@ -60,6 +61,8 @@ separately from protocol-comparable ASVspoof challenge systems.
 The score-fusion system combines dev-normalized LCNN and WavLM scores with a
 dev-selected weighted mean, testing whether the two model families make
 complementary errors.
+The robustness evaluation reuses the frozen LCNN, WavLM, and fusion systems
+under deterministic gain, clipping, resampling, and additive-noise corruptions.
 
 ## Results
 
@@ -107,6 +110,12 @@ WavLM-derived scores. They are useful as evidence that pretrained speech
 representations carry spoof-relevant information, while the LCNN remains the
 strongest protocol-comparable model trained from scratch in this repository.
 
+Robustness evaluation shows the fusion system is stable under gain changes and
+moderate clipping/resampling, but additive noise is the dominant failure mode.
+Under 10 dB additive noise, EER rises to 34.49% for LCNN, 21.62% for WavLM, and
+36.53% for fusion, showing that WavLM is the most noise-robust model even though
+fusion is strongest on clean eval.
+
 Generated reports:
 
 - `results.md`
@@ -114,6 +123,7 @@ Generated reports:
 - `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json`
 - `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json`
 - `results/fusion/metrics/lcnn_wavlm_score_fusion_seed42_summary.json`
+- `results/robustness/metrics/phase5_eval_corruptions_summary.json`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
@@ -239,6 +249,14 @@ Run LCNN+WavLM score fusion after restoring both systems' score CSVs:
 make phase4-fusion
 ```
 
+Run the Phase 5 robustness sweep after restoring eval audio and model
+artifacts:
+
+```bash
+make robustness-smoke
+make robustness-eval
+```
+
 ## Common Commands
 
 Run EDA only:
@@ -348,6 +366,7 @@ SAP/
 │   ├── phase3_gpu_runbook.md
 │   ├── phase3_ssl_plan.md
 │   ├── phase4_fusion_plan.md
+│   ├── phase5_robustness_plan.md
 │   └── run_artifact_contract.md
 ├── plan.md
 ├── results.md

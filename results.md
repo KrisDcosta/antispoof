@@ -93,6 +93,7 @@ Summary artifacts:
 - `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json`
 - `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json`
 - `results/fusion/metrics/lcnn_wavlm_score_fusion_seed42_summary.json`
+- `results/robustness/metrics/phase5_eval_corruptions_summary.json`
 - `results/baseline/summary/RESULTS.md`
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
@@ -133,6 +134,12 @@ LCNN+WavLM score fusion is the best numeric project result:
 This fusion result is external-pretrained/applied because it includes WavLM
 scores. It supports the research hypothesis that the scratch-trained
 spectrogram model and external-pretrained SSL model make complementary errors.
+
+The robustness sweep tests whether that complementarity survives deterministic
+audio corruptions. Fusion remains strong under gain shifts and moderate
+clipping/resampling, but additive noise reverses the ranking: WavLM is the most
+robust under noise, while fusion inherits enough LCNN sensitivity to degrade
+more sharply.
 
 The AASIST-lite waveform model is also trained from scratch and remains
 protocol-comparable, but it is not the strongest eval result:
@@ -357,10 +364,65 @@ Interpretation:
 - The selected `alpha=0.7` means the scratch-trained LCNN receives more weight,
   but WavLM contributes enough complementary information to reduce overall EER.
 
+### Phase 5 Robustness Evaluation
+
+Completed full eval robustness sweep in Colab.
+
+Run command:
+
+```bash
+python scripts/run_robustness_eval.py --config configs/robustness_phase5.json
+```
+
+The robustness runner evaluates the frozen LCNN, frozen WavLM, and frozen Phase
+4 fusion rule on deterministic corruptions. It does not retrain models, refit
+normalization, or retune fusion weights.
+
+Runtime:
+
+| Run ID | Split | Conditions | Elapsed Time | Evidence |
+|---|---|---:|---:|---|
+| `phase5_eval_corruptions` | eval | 12 completed, 1 codec condition skipped | 13,824.6s | `results/robustness/metrics/phase5_eval_corruptions_summary.json` |
+
+Selected EER by condition:
+
+| Condition | LCNN EER | WavLM EER | Fusion EER | Interpretation |
+|---|---:|---:|---:|---|
+| clean | 5.67% | 5.08% | 3.62% | fusion is best on clean eval |
+| gain -12 dB | 5.67% | 5.29% | 3.51% | gain does not harm fusion |
+| gain -6 dB | 5.67% | 5.10% | 3.52% | gain does not harm fusion |
+| gain +6 dB | 5.67% | 5.19% | 3.71% | small fusion degradation |
+| clip 0.8 | 5.81% | 5.09% | 3.79% | mild clipping has small impact |
+| clip 0.6 | 6.28% | 5.24% | 5.19% | fusion advantage narrows |
+| clip 0.4 | 8.03% | 5.74% | 6.13% | WavLM is strongest under heavy clipping |
+| resample 12 kHz | 7.46% | 5.13% | 6.12% | WavLM is most stable |
+| resample 8 kHz | 7.57% | 4.72% | 5.79% | WavLM improves under 8 kHz resampling |
+| noise 20 dB | 16.48% | 11.45% | 15.48% | WavLM is most noise-robust |
+| noise 10 dB | 34.49% | 21.62% | 36.53% | additive noise is the main failure mode |
+| noise 5 dB | 41.22% | 38.55% | 39.80% | all systems degrade severely |
+
+Skipped condition:
+
+```text
+codec_optional: codec corruption is optional and not enabled
+```
+
+Interpretation:
+
+- Fusion remains the best system for clean audio, gain shifts, mild clipping,
+  and clean benchmark-style conditions.
+- WavLM is consistently more robust than LCNN and fusion under additive noise.
+- Heavy clipping and resampling reduce the fusion advantage because the
+  LCNN-weighted fusion rule inherits spectrogram-model sensitivity.
+- The publication story should therefore be nuanced: fusion improves clean
+  unseen-attack performance, while SSL representations are more stable under
+  several channel distortions.
+
 ## Change Log
 
 | Date | Change |
 |---|---|
+| 2026-05-14 | Added accepted Phase 5 robustness evaluation result. |
 | 2026-05-11 | Added accepted LCNN+WavLM score-fusion result. |
 | 2026-05-10 | Polished final project wording for completed public repository snapshot. |
 | 2026-05-09 | Added accepted frozen WavLM pooled SSL full dev/eval result. |
