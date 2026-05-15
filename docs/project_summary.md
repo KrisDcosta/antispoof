@@ -36,35 +36,15 @@ diagnostic because the class distribution is imbalanced.
 
 ## System Architecture
 
-```mermaid
-flowchart LR
-  A["ASVspoof 2019 LA audio and protocols"] --> B["Split loader and validation"]
-  B --> C["Classical feature path"]
-  B --> D["Log-mel neural path"]
-  B --> E["Raw-waveform neural path"]
-  B --> F["Frozen SSL embedding path"]
+![Speech anti-spoofing evaluation workflow](figures/system_architecture.png)
 
-  C --> C1["LFCC / MFCC / CQCC"]
-  C1 --> C2["Dual GMM LLR scoring"]
-
-  D --> D1["LCNN trained from scratch"]
-  E --> E1["AASIST-lite waveform model"]
-  F --> F1["WavLM mean+std pooled embeddings"]
-  F1 --> F2["MLP classifier head"]
-
-  C2 --> G["Score files and metrics"]
-  D1 --> G
-  E1 --> G
-  F2 --> G
-
-  G --> H["LCNN + WavLM score fusion"]
-  G --> I["Per-attack diagnostics"]
-  H --> J["Robustness evaluation"]
-  I --> K["Results ledger"]
-  J --> K
-```
+The workflow keeps clean benchmark scoring, external-pretrained applied
+comparison, score fusion, and corruption robustness inside the same evaluation
+harness.
 
 ## Accepted Results
+
+![ASVspoof 2019 LA eval EER comparison](figures/eval_eer_comparison.png)
 
 | System | Track | Params | Dev EER | Eval EER | Role |
 |---|---|---:|---:|---:|---|
@@ -83,6 +63,8 @@ The best numeric result is LCNN+WavLM score fusion at 3.62% eval EER. This is
 external-pretrained/applied because WavLM uses external speech pretraining.
 
 ## Robustness Findings
+
+![Robustness EER under deterministic audio corruptions](figures/robustness_eer_by_condition.png)
 
 The robustness sweep evaluates frozen accepted systems under deterministic
 corruption. No models are retrained, no normalization is refit on corrupted
@@ -115,6 +97,14 @@ The compact committed evidence is:
 - `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json`
 - `results/fusion/metrics/lcnn_wavlm_score_fusion_seed42_summary.json`
 - `results/robustness/metrics/phase5_eval_corruptions_summary.json`
+
+Curated public figures are stored in `docs/figures/`:
+
+- `system_architecture.png`
+- `eval_eer_comparison.png`
+- `per_attack_eval_eer.png`
+- `robustness_eer_by_condition.png`
+- `fusion_alpha_sweep.png`
 
 Large audio, checkpoints, raw scores, embedding caches, and full robustness run
 folders are intentionally excluded from git.

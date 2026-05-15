@@ -114,9 +114,23 @@ Under 10 dB additive noise, EER rises to 34.49% for LCNN, 21.62% for WavLM, and
 36.53% for fusion, showing that WavLM is the most noise-robust model even though
 fusion is strongest on clean eval.
 
+## Key Figures
+
+![Speech anti-spoofing evaluation workflow](docs/figures/system_architecture.png)
+
+![ASVspoof 2019 LA eval EER comparison](docs/figures/eval_eer_comparison.png)
+
+![Robustness EER under deterministic audio corruptions](docs/figures/robustness_eer_by_condition.png)
+
+Additional curated figures:
+
+- `docs/figures/per_attack_eval_eer.png`
+- `docs/figures/fusion_alpha_sweep.png`
+
 Generated reports:
 
 - `results.md`
+- `docs/figures/`
 - `results/neural/metrics/lcnn_logmel_full_seed42_30ep_summary.json`
 - `results/neural/metrics/aasist_lite_waveform_seed42_100ep_summary.json`
 - `results/neural/metrics/ssl_wavlm_pooled_full_seed42_50ep_summary.json`
@@ -361,7 +375,8 @@ SAP/
 │   └── robustness_eval_smoke.json
 ├── docs/
 │   ├── project_summary.md
-│   └── reproducibility.md
+│   ├── reproducibility.md
+│   └── figures/
 ├── results.md
 ├── src/
 │   ├── dataset.py        # official ASVspoof protocol loader
@@ -375,6 +390,7 @@ SAP/
 │   ├── attack_breakdown.py
 │   ├── cache_ssl_embeddings.py
 │   ├── check_ssl_ready.py
+│   ├── create_public_figures.py
 │   ├── eda.py
 │   ├── run_project.py
 │   ├── run_robustness_eval.py

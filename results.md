@@ -98,6 +98,11 @@ Summary artifacts:
 - `results/baseline/summary/project_results.csv`
 - `results/baseline/summary/plots/project_eer_by_split.png`
 - `results/baseline/summary/plots/eval_eer_vs_standard_baselines.png`
+- `docs/figures/eval_eer_comparison.png`
+- `docs/figures/per_attack_eval_eer.png`
+- `docs/figures/robustness_eer_by_condition.png`
+- `docs/figures/fusion_alpha_sweep.png`
+- `docs/figures/system_architecture.png`
 
 ## Interpretation
 

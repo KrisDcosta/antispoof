@@ -114,6 +114,24 @@ results/baseline/plots/
 results/baseline/summary/
 ```
 
+## Public Figures
+
+The final GitHub figures are generated from committed metrics:
+
+```bash
+python scripts/create_public_figures.py
+```
+
+Outputs:
+
+```text
+docs/figures/eval_eer_comparison.png
+docs/figures/per_attack_eval_eer.png
+docs/figures/robustness_eer_by_condition.png
+docs/figures/fusion_alpha_sweep.png
+docs/figures/system_architecture.png
+```
+
 ## Neural GPU Runs
 
 Full neural runs are GPU-oriented and were executed in Colab.
