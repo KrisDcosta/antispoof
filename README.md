@@ -15,10 +15,15 @@ commands, compact result evidence, and documentation are committed, while the
 large ASVspoof audio, raw score files, checkpoints, and embedding caches remain
 outside git.
 
+For a short project report, start with `docs/project_summary.md`. For rerunning
+or auditing the results, start with `docs/reproducibility.md`.
+
 Project control documents:
 
 - `plan.md`: completed scope, architecture, and implementation rules
 - `results.md`: authoritative results ledger for reported numbers
+- `docs/project_summary.md`: concise final project report and architecture map
+- `docs/reproducibility.md`: setup, artifact, and rerun guide
 - `docs/run_artifact_contract.md`: expected structure for experiment outputs
 - `docs/colab_handoff.md`: Colab/VSCode GPU run instructions
 - `docs/phase3_ssl_plan.md`: external-pretrained SSL design and accepted result
@@ -359,14 +364,19 @@ SAP/
 │   ├── neural_lcnn.json
 │   ├── neural_lcnn_smoke.json
 │   ├── neural_ssl_wavlm_frozen.json
-│   └── neural_ssl_wavlm_frozen_smoke.json
+│   ├── neural_ssl_wavlm_frozen_smoke.json
+│   ├── robustness_phase5.json
+│   └── robustness_phase5_smoke.json
 ├── docs/
 │   ├── colab_handoff.md
 │   ├── model_card_template.md
 │   ├── phase3_gpu_runbook.md
 │   ├── phase3_ssl_plan.md
 │   ├── phase4_fusion_plan.md
+│   ├── phase5_robustness_implementation_plan.md
 │   ├── phase5_robustness_plan.md
+│   ├── project_summary.md
+│   ├── reproducibility.md
 │   └── run_artifact_contract.md
 ├── plan.md
 ├── results.md
@@ -384,6 +394,7 @@ SAP/
 │   ├── check_phase3_ssl_ready.py
 │   ├── eda.py
 │   ├── run_project.py
+│   ├── run_robustness_eval.py
 │   ├── run_score_fusion.py
 │   ├── summarize_results.py
 │   ├── train_eval.py
@@ -392,12 +403,19 @@ SAP/
 ├── tests/
 │   ├── test_evaluate.py
 │   ├── test_feature_cache.py
-│   └── test_features.py
+│   ├── test_features.py
+│   ├── test_neural.py
+│   ├── test_robustness_phase5.py
+│   ├── test_score_fusion.py
+│   └── test_ssl_phase3.py
 ├── references/
 │   └── standard_baselines.json
 ├── results/
 │   ├── baseline/
-│   └── eda/
+│   ├── eda/
+│   ├── fusion/
+│   ├── neural/
+│   └── robustness/
 └── archive/
     ├── legacy_experiments_2026-05-06/
     └── original_rf_pipeline_2026-05-05/

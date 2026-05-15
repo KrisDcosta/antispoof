@@ -27,7 +27,7 @@ generic app or leaderboard-only experiment.
 | Primary metric | Eval EER |
 | Secondary metrics | Dev EER, per-attack EER, ROC, score distributions, model size, training time |
 | Results source of truth | Root `results.md` plus machine-readable JSON/CSV artifacts |
-| Challenge comparability | All reported headline models avoid external pretrained speech encoders |
+| Challenge comparability | Protocol-comparable claims avoid external pretrained speech encoders; WavLM and fusion are labeled external-pretrained/applied |
 | Compute | Local Mac for smoke tests/docs; Colab GPU for full neural training |
 | Hyperparameter search | Use controlled configs; do not tune on eval |
 | Storage policy | Keep dataset audio, checkpoints, score files, and large caches out of git |
@@ -66,6 +66,7 @@ Implemented and validated:
 - LCNN+WavLM score-fusion complementarity baseline
 - deterministic robustness evaluation under gain, clipping, resampling, and noise
 - Colab handoff workflow for GPU training and artifact archival
+- final project summary and reproducibility guide
 
 ## Completed Results
 
@@ -102,6 +103,8 @@ Best applied result:
 - external-pretrained/applied, not protocol-comparable
 
 See `results.md` for run commands, per-attack EER, and evidence paths.
+See `docs/project_summary.md` for a compact final project report.
+See `docs/reproducibility.md` for setup, artifact boundaries, and rerun steps.
 
 ## System Architecture
 
@@ -202,3 +205,4 @@ Compact summaries are committed under `results/**/metrics/`.
 - [x] Full LCNN+WavLM score-fusion run
 - [x] Full Phase 5 robustness eval run
 - [x] README and results ledger updated with final metrics
+- [x] Project summary and reproducibility guide added
